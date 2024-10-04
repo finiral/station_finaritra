@@ -1,0 +1,78 @@
+CREATE TABLE Pompiste(
+   id_pompiste SERIAL,
+   nom_pompiste VARCHAR(100)  NOT NULL,
+   PRIMARY KEY(id_pompiste)
+);
+
+CREATE TABLE Liquide(
+   id_liquide SERIAL,
+   nom_liquide VARCHAR(50)  NOT NULL,
+   prixUnitaireAchat NUMERIC(15,2)   NOT NULL,
+   prixUnitaireVente NUMERIC(15,2)   NOT NULL,
+   PRIMARY KEY(id_liquide)
+);
+
+CREATE TABLE Depense(
+   id_depense SERIAL,
+   intitule VARCHAR(50)  NOT NULL,
+   montant_total NUMERIC(15,2)   NOT NULL,
+   qte INTEGER NOT NULL,
+   date_depense DATE NOT NULL,
+   PRIMARY KEY(id_depense)
+);
+
+CREATE TABLE Reservoir(
+   id_reservoir SERIAL,
+   qte_max NUMERIC(15,2)   NOT NULL,
+   id_liquide INTEGER NOT NULL,
+   PRIMARY KEY(id_reservoir),
+   FOREIGN KEY(id_liquide) REFERENCES Liquide(id_liquide)
+);
+
+CREATE TABLE StockReservoir(
+   id_stockreservoir SERIAL,
+   dt_stock DATE NOT NULL,
+   qte_stock NUMERIC(15,2)   NOT NULL,
+   id_reservoir INTEGER NOT NULL,
+   PRIMARY KEY(id_stockreservoir),
+   FOREIGN KEY(id_reservoir) REFERENCES Reservoir(id_reservoir)
+);
+
+CREATE TABLE MesureReservoir(
+   id_mesureReservoir SERIAL,
+   mesureLongueur NUMERIC(15,2)   NOT NULL,
+   mesureVolume NUMERIC(15,2)   NOT NULL,
+   id_reservoir INTEGER NOT NULL,
+   PRIMARY KEY(id_mesureReservoir),
+   FOREIGN KEY(id_reservoir) REFERENCES Reservoir(id_reservoir)
+);
+
+CREATE TABLE Pompe(
+   id_pompe SERIAL,
+   numero_pompe INTEGER NOT NULL,
+   qteMax NUMERIC(15,2)   NOT NULL,
+   id_reservoir INTEGER NOT NULL,
+   PRIMARY KEY(id_pompe),
+   FOREIGN KEY(id_reservoir) REFERENCES Reservoir(id_reservoir)
+);
+
+CREATE TABLE Prelevement(
+   id_prelevement SERIAL,
+   compteur_prelevement NUMERIC(15,2)   NOT NULL,
+   dateheure_prelevement TIMESTAMP NOT NULL,
+   id_pompe INTEGER NOT NULL,
+   id_pompiste INTEGER NOT NULL,
+   PRIMARY KEY(id_prelevement),
+   FOREIGN KEY(id_pompe) REFERENCES Pompe(id_pompe),
+   FOREIGN KEY(id_pompiste) REFERENCES Pompiste(id_pompiste)
+);
+
+CREATE TABLE Encaissement(
+   id_encaissement SERIAL,
+   dateheure_encaissement TIMESTAMP,
+   montant_encaissement NUMERIC(15,2)   NOT NULL,
+   id_prelevement INTEGER NOT NULL,
+   PRIMARY KEY(id_encaissement),
+   UNIQUE(id_prelevement),
+   FOREIGN KEY(id_prelevement) REFERENCES Prelevement(id_prelevement)
+);

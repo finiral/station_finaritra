@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>io.openliberty.tools</groupId>
+        <artifactId>liberty-maven-app-parent</artifactId>
+        <version>3.7.1</version>
+    </parent>
+    
+    <groupId>mg.fini_station</groupId>
+    <artifactId>fini_station</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+
+    <name>Sample EAR Project</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+    
+    <modules>
+        <module>fini_station-ejb</module>
+        <module>fini_station-war</module>
+        <module>fini_station-ear</module>
+    </modules>
+</project>

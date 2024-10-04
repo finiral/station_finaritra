@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DeployEAR" default="deploy" basedir=".">
+  
+    <!-- Propriétés pour définir les chemins source et destination -->
+    <property name="ear.file" value="C:/Users/USER/College/ANNEE3/S5/ArchiLog/station_finaritra/fini_station/fini_station-ear/target/fini_station-ear.ear"/>
+    <property name="deploy.dir" value="C:/wildfly-10.0.0.Final/wildfly-10.0.0.Final/standalone/deployments"/>
+
+    <!-- Tâche pour copier le fichier EAR -->
+    <target name="deploy">
+        <copy file="${ear.file}" todir="${deploy.dir}" overwrite="true"/>
+        <echo message="Déploiement de fini_station-ear.ear dans le répertoire de déploiement de WildFly"/>
+    </target>
+
+</project>

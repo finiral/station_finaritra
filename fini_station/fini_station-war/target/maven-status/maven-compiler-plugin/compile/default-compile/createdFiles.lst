@@ -1,0 +1,6 @@
+mg\fini_station\ejb\web\FormPrelevementServlet.class
+mg\fini_station\ejb\web\EJBServlet.class
+mg\fini_station\ejb\web\BeneficesServlet.class
+mg\fini_station\ejb\web\EncaissementServlet.class
+mg\fini_station\ejb\web\TahinaServlet.class
+mg\fini_station\ejb\web\ReservoirServlet.class
