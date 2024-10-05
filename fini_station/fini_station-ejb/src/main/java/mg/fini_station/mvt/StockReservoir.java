@@ -1,7 +1,7 @@
 package mg.fini_station.mvt;
 
 import java.sql.Connection;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -9,16 +9,24 @@ import java.util.List;
 
 import mg.fini_station.stock.Reservoir;
 import mg.fini_station.utils.DbConn;
+import mg.fini_station.utils.Utilitaire;
 
 public class StockReservoir {
     private String table_name = "StockReservoir"; // Table name attribute
     private int idStockReservoir;
-    private Date dt; // Utilisation de Date
+    private Timestamp dt; // Utilisation de Date
     private double qte;
     private Reservoir reserv;
 
     // Constructors
     public StockReservoir(int idStockReservoir, String dt, double qte, Reservoir reserv) {
+        setIdStockReservoir(idStockReservoir);
+        setDt(dt);
+        setQte(qte);
+        setReserv(reserv);
+    }
+
+    public StockReservoir(int idStockReservoir, Timestamp dt, double qte, Reservoir reserv) {
         setIdStockReservoir(idStockReservoir);
         setDt(dt);
         setQte(qte);
@@ -37,16 +45,16 @@ public class StockReservoir {
         this.idStockReservoir = idStockReservoir;
     }
 
-    public Date getDt() {
+    public Timestamp getDt() {
         return dt;
     }
 
-    public void setDt(Date dt) {
+    public void setDt(Timestamp dt) {
         this.dt = dt;
     }
 
     public void setDt(String dt) {
-        this.setDt(Date.valueOf(dt));
+        this.setDt(Utilitaire.parseToTimestamp(dt));
     }
 
     public double getQte() {
@@ -70,12 +78,23 @@ public class StockReservoir {
     // Insert a StockReservoir record
     public void insert() throws Exception {
         Connection c = null;
+        try {
+            DbConn db = new DbConn();
+            c = db.getConnection();
+            this.insert();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (c != null) c.close();
+        }
+    }
+    public void insert(Connection c) throws Exception {
         PreparedStatement s = null;
         try {
             DbConn db = new DbConn();
             c = db.getConnection();
             s = c.prepareStatement("INSERT INTO " + this.table_name + " (dt_stock, qte_stock, id_reservoir) VALUES (?, ?, ?)");
-            s.setDate(1, this.getDt());
+            s.setTimestamp(1, this.getDt());
             s.setDouble(2, this.getQte());
             s.setInt(3, this.getReserv().getIdReservoir());
             s.executeUpdate();
@@ -83,7 +102,6 @@ public class StockReservoir {
             throw e;
         } finally {
             if (s != null) s.close();
-            if (c != null) c.close();
         }
     }
 
@@ -101,7 +119,7 @@ public class StockReservoir {
             while (rs.next()) {
                 StockReservoir stockReservoir = new StockReservoir();
                 stockReservoir.setIdStockReservoir(rs.getInt("id_stockreservoir"));
-                stockReservoir.setDt(rs.getDate("dt_stock"));
+                stockReservoir.setDt(rs.getTimestamp("dt_stock"));
                 stockReservoir.setQte(rs.getDouble("qte_stock"));
                 // You may want to retrieve the Reservoir object as well if necessary
                 res.add(stockReservoir);
@@ -131,7 +149,7 @@ public class StockReservoir {
             if (rs.next()) {
                 stockReservoir = new StockReservoir();
                 stockReservoir.setIdStockReservoir(rs.getInt("id_stockreservoir"));
-                stockReservoir.setDt(rs.getDate("dt_stock"));
+                stockReservoir.setDt(rs.getTimestamp("dt_stock"));
                 stockReservoir.setQte(rs.getDouble("qte_stock"));
                 // You may want to retrieve the Reservoir object as well if necessary
             }
@@ -153,7 +171,7 @@ public class StockReservoir {
             DbConn db = new DbConn();
             c = db.getConnection();
             s = c.prepareStatement("UPDATE " + this.table_name + " SET dt_stock = ?, qte_stock = ?, id_reservoir = ? WHERE id_stockreservoir = ?");
-            s.setDate(1, this.getDt());
+            s.setTimestamp(1, this.getDt());
             s.setDouble(2, this.getQte());
             s.setInt(3, this.getReserv().getIdReservoir());
             s.setInt(4, this.getIdStockReservoir());

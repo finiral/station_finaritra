@@ -4,6 +4,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import mg.fini_station.mvt.StockReservoir;
+import mg.fini_station.stock.Reservoir;
 import mg.fini_station.utils.DbConn;
 import mg.fini_station.utils.Utilitaire;
 
@@ -77,6 +79,20 @@ public class Prelevement {
     // Insert a Prelevement record
     public void insert() throws Exception {
         Connection c = null;
+        try {
+            DbConn db = new DbConn();
+            c = db.getConnection();
+            this.insert(c);
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+    }
+
+    public void insert(Connection c) throws Exception {
         PreparedStatement s = null;
         try {
             DbConn db = new DbConn();
@@ -93,9 +109,6 @@ public class Prelevement {
         } finally {
             if (s != null) {
                 s.close();
-            }
-            if (c != null) {
-                c.close();
             }
         }
     }
@@ -116,7 +129,8 @@ public class Prelevement {
                 p.setIdPrelevement(rs.getInt("id_prelevement"));
                 p.setCompteur(rs.getDouble("compteur_prelevement"));
                 p.setDateTime(rs.getTimestamp("dateheure_prelevement"));
-                // Retrieve and set Pompiste and Pompe objects (assuming you have appropriate DAO methods for them)
+                // Retrieve and set Pompiste and Pompe objects (assuming you have appropriate
+                // DAO methods for them)
                 p.setPompiste(new Pompiste().getById(rs.getInt("id_pompiste")));
                 p.setPompe(new Pompe().getById(rs.getInt("id_pompe")));
                 res.add(p);
@@ -219,6 +233,149 @@ public class Prelevement {
             if (c != null) {
                 c.close();
             }
+        }
+    }
+
+    // Retrieve all Prelevement records by Pompe ID
+    public List<Prelevement> getByIdPompe(int idPompe) throws Exception {
+        Connection c = null;
+        try {
+            DbConn db = new DbConn();
+            c = db.getConnection();
+            return this.getByIdPompe(c, idPompe);
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (c != null)
+                c.close();
+        }
+    }
+
+    public List<Prelevement> getByIdPompe(Connection c, int idPompe) throws Exception {
+        PreparedStatement s = null;
+        ResultSet rs = null;
+        List<Prelevement> res = new ArrayList<>();
+        try {
+            DbConn db = new DbConn();
+            c = db.getConnection();
+            s = c.prepareStatement("SELECT * FROM " + this.table_name + " WHERE id_pompe = ?");
+            s.setInt(1, idPompe);
+            rs = s.executeQuery();
+            while (rs.next()) {
+                Prelevement p = new Prelevement();
+                p.setIdPrelevement(rs.getInt("id_prelevement"));
+                p.setCompteur(rs.getDouble("compteur_prelevement"));
+                p.setDateTime(rs.getTimestamp("dateheure_prelevement"));
+                // Retrieve and set Pompiste and Pompe objects
+                p.setPompiste(new Pompiste().getById(rs.getInt("id_pompiste")));
+                p.setPompe(new Pompe().getById(rs.getInt("id_pompe")));
+                res.add(p);
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (rs != null)
+                rs.close();
+            if (s != null)
+                s.close();
+        }
+        return res;
+    }
+
+    // Retrieve all Prelevement records by Pompe ID, ordered by date in descending
+    // order
+    public List<Prelevement> getByIdPompeDtDesc(int idPompe) throws Exception {
+        Connection c = null;
+        try {
+            DbConn db = new DbConn();
+            c = db.getConnection();
+            return this.getByIdPompeDtDesc(c, idPompe);
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (c != null)
+                c.close();
+        }
+    }
+
+    public List<Prelevement> getByIdPompeDtDesc(Connection c, int idPompe) throws Exception {
+        PreparedStatement s = null;
+        ResultSet rs = null;
+        List<Prelevement> res = new ArrayList<>();
+        try {
+            DbConn db = new DbConn();
+            c = db.getConnection();
+            // Modified query to order by date in descending order
+            s = c.prepareStatement(
+                    "SELECT * FROM " + this.table_name + " WHERE id_pompe = ? ORDER BY dateheure_prelevement DESC");
+            s.setInt(1, idPompe);
+            rs = s.executeQuery();
+            while (rs.next()) {
+                Prelevement p = new Prelevement();
+                p.setIdPrelevement(rs.getInt("id_prelevement"));
+                p.setCompteur(rs.getDouble("compteur_prelevement"));
+                p.setDateTime(rs.getTimestamp("dateheure_prelevement"));
+                // Retrieve and set Pompiste and Pompe objects
+                p.setPompiste(new Pompiste().getById(rs.getInt("id_pompiste")));
+                p.setPompe(new Pompe().getById(rs.getInt("id_pompe")));
+                res.add(p);
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (rs != null)
+                rs.close();
+            if (s != null)
+                s.close();
+        }
+        return res;
+    }
+
+    public double getDifferenceCompteur(Connection c) throws Exception{
+        List<Prelevement> ls=this.getByIdPompeDtDesc(c, this.getPompe().getIdPompe());
+        return ls.get(0).getCompteur()-ls.get(1).getCompteur();      
+    }
+
+    public double getDifferenceCompteurVola(Connection c) throws Exception{
+        return this.getDifferenceCompteur(c)*this.getPompe().getReservoir().getTypeLiquide().getPrixUnitaireVente();
+    }
+
+    public boolean isStatePair(Connection c) throws Exception {
+        List<Prelevement> ls = this.getByIdPompe(c, this.getPompe().getIdPompe());
+        return ls.size() % 2 == 0;
+    }
+
+    public boolean isStatePair() throws Exception {
+        List<Prelevement> ls = this.getByIdPompe(this.getPompe().getIdPompe());
+        return ls.size() % 2 == 0;
+    }
+
+    public void prelever() throws Exception {
+        Connection c = null;
+        try {
+            DbConn db = new DbConn();
+            c = db.getConnection();
+            c.setAutoCommit(false);
+            if (this.isStatePair(c)) {
+                // c'est une entree
+                this.insert(c);
+
+            } else {
+                // c'est une sortie
+                this.insert(c);
+                double new_qte=-this.getDifferenceCompteur(c);
+                StockReservoir s=new StockReservoir(-78,this.getDateTime(),new_qte,this.getPompe().getReservoir());
+                s.insert(c);
+
+            }
+            c.commit();
+
+        } catch (Exception e) {
+            c.rollback();
+            throw e;
+        } finally {
+            if (c != null)
+                c.close();
         }
     }
 }

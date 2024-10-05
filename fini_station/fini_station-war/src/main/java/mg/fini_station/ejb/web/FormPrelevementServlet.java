@@ -21,11 +21,10 @@ public class FormPrelevementServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            if(req.getParameter("error")!=null){
-                req.setAttribute("etat",req.getParameter("error"));
-            }
-            else if(req.getParameter("sucess")!=null){
-                req.setAttribute("etat","Insertion prelevemenet réussi");
+            if (req.getParameter("error") != null) {
+                req.setAttribute("etat", req.getParameter("error"));
+            } else if (req.getParameter("success") != null) {
+                req.setAttribute("etat", "Insertion prelevemenet réussi");
             }
             List<Pompiste> ls_pompiste = new Pompiste().getAll();
             List<Pompe> ls_pompe = new Pompe().getAll();
@@ -40,21 +39,20 @@ public class FormPrelevementServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int id_pompiste=Integer.parseInt(req.getParameter("id_pompiste"));
-        Pompiste pompiste=new Pompiste();
-        pompiste.setIdPompiste(id_pompiste);
-        int id_pompe=Integer.parseInt(req.getParameter("id_pompe"));
-        mg.fini_station.pompes.Pompe pompe=new Pompe();
-        pompe.setIdPompe(id_pompe);
-        String dt_time=req.getParameter("dt_time");
-        double montant=Double.parseDouble(req.getParameter("montant"));
-        Prelevement p=new Prelevement(-98,pompiste,pompe,montant,dt_time);
+
         try {
-            p.insert();
+            int id_pompiste = Integer.parseInt(req.getParameter("id_pompiste"));
+            Pompiste pompiste = new Pompiste().getById(id_pompiste);
+            int id_pompe = Integer.parseInt(req.getParameter("id_pompe"));
+            mg.fini_station.pompes.Pompe pompe = new Pompe().getById(id_pompe);
+            String dt_time = req.getParameter("dt_time");
+            double montant = Double.parseDouble(req.getParameter("montant"));
+            Prelevement p = new Prelevement(-98, pompiste, pompe, montant, dt_time);
+            p.prelever();
             resp.sendRedirect("prelevement?success=1");
         } catch (Exception ex) {
             Logger.getLogger(FormPrelevementServlet.class.getName()).log(Level.SEVERE, null, ex);
-            resp.sendRedirect("prelevement?error="+ex.getMessage());
+            resp.sendRedirect("prelevement?error=" + ex.getMessage());
         }
     }
 

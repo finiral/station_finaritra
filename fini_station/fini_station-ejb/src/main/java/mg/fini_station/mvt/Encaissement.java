@@ -7,24 +7,35 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.itextpdf.text.ExceptionConverter;
+
+import mg.fini_station.pompes.Prelevement;
 import mg.fini_station.utils.DbConn;
 
 public class Encaissement {
     private String table_name = "Encaissement"; // Table name attribute
     private int idEncaissement;
+    private Prelevement prelevement;
     private double montant;
     private Timestamp dt; // Utilisation de Timestamp
-    private String motif;
 
     // Constructors
-    public Encaissement(int idEncaissement, double montant, String dt, String motif) {
+    public Encaissement(int idEncaissement, double montant, Prelevement p, String dt) {
         setIdEncaissement(idEncaissement);
         setMontant(montant);
         setDt(dt);
-        setMotif(motif);
+        setPrelevement(p);
     }
 
     public Encaissement() {
+    }
+
+    public Prelevement getPrelevement() {
+        return prelevement;
+    }
+
+    public void setPrelevement(Prelevement prelevement) {
+        this.prelevement = prelevement;
     }
 
     // Getters and Setters
@@ -56,14 +67,6 @@ public class Encaissement {
         this.setDt(Timestamp.valueOf(dt));
     }
 
-    public String getMotif() {
-        return motif;
-    }
-
-    public void setMotif(String motif) {
-        this.motif = motif;
-    }
-
     // DAO Methods
 
     // Insert an Encaissement record
@@ -73,10 +76,10 @@ public class Encaissement {
         try {
             DbConn db = new DbConn();
             c = db.getConnection();
-            s = c.prepareStatement("INSERT INTO " + this.table_name + " (montant, date_encaissement, motif) VALUES (?, ?, ?)");
+            s = c.prepareStatement("INSERT INTO " + this.table_name + " (montant, date_encaissement, id_prelevement) VALUES (?, ?, ?)");
             s.setDouble(1, this.getMontant());
             s.setTimestamp(2, this.getDt());
-            s.setString(3, this.getMotif());
+            s.setInt(3, this.getPrelevement().getIdPrelevement()); // Set Prelevement ID
             s.executeUpdate();
         } catch (Exception e) {
             throw e;
@@ -102,7 +105,12 @@ public class Encaissement {
                 encaissement.setIdEncaissement(rs.getInt("id_encaissement"));
                 encaissement.setMontant(rs.getDouble("montant"));
                 encaissement.setDt(rs.getTimestamp("date_encaissement"));
-                encaissement.setMotif(rs.getString("motif"));
+
+                // Retrieve Prelevement object
+                Prelevement prelevement = new Prelevement();
+                prelevement = prelevement.getById(rs.getInt("id_prelevement")); // Set Prelevement from DB
+                encaissement.setPrelevement(prelevement);
+
                 res.add(encaissement);
             }
             return res;
@@ -132,7 +140,11 @@ public class Encaissement {
                 encaissement.setIdEncaissement(rs.getInt("id_encaissement"));
                 encaissement.setMontant(rs.getDouble("montant"));
                 encaissement.setDt(rs.getTimestamp("date_encaissement"));
-                encaissement.setMotif(rs.getString("motif"));
+
+                // Retrieve Prelevement object
+                Prelevement prelevement = new Prelevement();
+                prelevement = prelevement.getById(rs.getInt("id_prelevement")); // Set Prelevement from DB
+                encaissement.setPrelevement(prelevement);
             }
             return encaissement;
         } catch (Exception e) {
@@ -151,10 +163,10 @@ public class Encaissement {
         try {
             DbConn db = new DbConn();
             c = db.getConnection();
-            s = c.prepareStatement("UPDATE " + this.table_name + " SET montant = ?, date_encaissement = ?, motif = ? WHERE id_encaissement = ?");
+            s = c.prepareStatement("UPDATE " + this.table_name + " SET montant = ?, date_encaissement = ?, id_prelevement = ? WHERE id_encaissement = ?");
             s.setDouble(1, this.getMontant());
             s.setTimestamp(2, this.getDt());
-            s.setString(3, this.getMotif());
+            s.setInt(3, this.getPrelevement().getIdPrelevement()); // Update Prelevement ID
             s.setInt(4, this.getIdEncaissement());
             s.executeUpdate();
         } catch (Exception e) {
@@ -181,5 +193,9 @@ public class Encaissement {
             if (s != null) s.close();
             if (c != null) c.close();
         }
+    }
+
+    public void encaisser() throws Exception{
+        this.insert();
     }
 }

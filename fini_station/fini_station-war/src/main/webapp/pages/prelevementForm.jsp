@@ -38,7 +38,7 @@ String etat = (String) request.getAttribute("etat");
     <input type="datetime-local" name="dt_time">
     <br>
     <label for="">Montant</label>
-    <input type="number" name="montant">
+    <input type="number" name="montant" step="0.1">
     <br>
     <input type="submit" value="valider">
 </form>

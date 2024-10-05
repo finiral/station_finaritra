@@ -1,24 +1,37 @@
 <%@ include file="header.jsp" %>
+<%@page import="mg.fini_station.stock.*"%>
+<%@page import="java.util.List"%>
+<%
+    // Obtenez la liste des pr�l�vements depuis l'attribut de la requ�te
+    List<Reservoir> ls_reservoir = (List<Reservoir>) request.getAttribute("ls_reservoir");
 
-<form>
-    <h2>ACHAT RESERVOIR</h2>
+    // V�rification de l'attribut 'etat' pour les messages de succ�s ou d'erreur
+    if (request.getAttribute("etat") != null) { 
+        String etat = (String) request.getAttribute("etat");
+%>
+        <script type="text/javascript">
+            alert("<%= etat.replace("\"", "\\\"") %>"); // Afficher un message d'alerte en fonction de l'�tat
+        </script>
+<% 
+    }
+%>
+
+<form method="POST" action="reservoir">
+    <h2>ACHAT LIQUIDE RESERVOIR</h2>
     <label for="">Reservoir</label>
-    <select name="" id="">
-        <option value="">R1</option>
-        <option value="">R1</option>
-    </select>
-    <br>
-    <label for="">Type liquide</label>
-    <select name="" id="">
-        <option value="">L2</option>
-        <option value="">L2</option>
+    <select name="id_reservoir" id="">
+    <%
+        for(Reservoir r:ls_reservoir){
+            %><option value="<%=r.getIdReservoir()%>"><%=r.getIdReservoir()%> - <%=r.getTypeLiquide().getNomLiquide()%></option>
+    <%    }
+    %>
     </select>
     <br>
     <label for="">Date</label>
-    <input type="datetime-local">
+    <input type="datetime-local" name="dt" required>
     <br>
     <label for="">Quantite achete</label>
-    <input type="number">
+    <input type="number" name="qte" step="0.1" required>
     <br>
     <input type="submit" value="valider">
 </form>
