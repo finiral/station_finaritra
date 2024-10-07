@@ -18,19 +18,18 @@ import mg.fini_station.pompes.Prelevement;
 @WebServlet("/prelevement")
 public class FormPrelevementServlet extends HttpServlet {
 
+    protected void prepDispatch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        List<Pompiste> ls_pompiste = new Pompiste().getAll();
+        List<Pompe> ls_pompe = new Pompe().getAll();
+        req.setAttribute("pompistes", ls_pompiste);
+        req.setAttribute("pompes", ls_pompe);
+        req.getRequestDispatcher("pages/prelevementForm.jsp").forward(req, resp);
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            if (req.getParameter("error") != null) {
-                req.setAttribute("etat", req.getParameter("error"));
-            } else if (req.getParameter("success") != null) {
-                req.setAttribute("etat", "Insertion prelevemenet réussi");
-            }
-            List<Pompiste> ls_pompiste = new Pompiste().getAll();
-            List<Pompe> ls_pompe = new Pompe().getAll();
-            req.setAttribute("pompistes", ls_pompiste);
-            req.setAttribute("pompes", ls_pompe);
-            req.getRequestDispatcher("pages/prelevementForm.jsp").forward(req, resp);
+            prepDispatch(req, resp);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -49,10 +48,17 @@ public class FormPrelevementServlet extends HttpServlet {
             double montant = Double.parseDouble(req.getParameter("montant"));
             Prelevement p = new Prelevement(-98, pompiste, pompe, montant, dt_time);
             p.prelever();
-            resp.sendRedirect("prelevement?success=1");
+            req.setAttribute("etat", "Insertion prelevemenet réussi");
+            prepDispatch(req, resp);
         } catch (Exception ex) {
             Logger.getLogger(FormPrelevementServlet.class.getName()).log(Level.SEVERE, null, ex);
-            resp.sendRedirect("prelevement?error=" + ex.getMessage());
+            req.setAttribute("etat", ex.getMessage());
+            try {
+                prepDispatch(req, resp);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 

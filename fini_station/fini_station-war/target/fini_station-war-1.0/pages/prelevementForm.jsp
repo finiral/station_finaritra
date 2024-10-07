@@ -5,14 +5,7 @@
 <%
 List<Pompiste> ls_pompiste=(List<Pompiste>)request.getAttribute("pompistes");
 List<mg.fini_station.pompes.Pompe> ls_pompe=(List<mg.fini_station.pompes.Pompe>)request.getAttribute("pompes");
-if (request.getAttribute("etat") != null) { 
-String etat = (String) request.getAttribute("etat");
-%>
-    <script>
-        window.alert("<%= etat.replace("\"", "\\\"") %>");
-    </script>
-<% 
-}
+
 %>
 <form method="POST" action="prelevement">
     <h2>Formulaire Prelevement</h2>

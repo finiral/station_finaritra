@@ -4,6 +4,7 @@ C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_sta
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-ejb\src\main\java\mg\fini_station\mvt\Benefice.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-ejb\src\main\java\mg\fini_station\mvt\Depense.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-ejb\src\main\java\mg\fini_station\mvt\Encaissement.java
+C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-ejb\src\main\java\mg\fini_station\mvt\PrelevementReservoir.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-ejb\src\main\java\mg\fini_station\mvt\StockReservoir.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-ejb\src\main\java\mg\fini_station\pompes\Pompe.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-ejb\src\main\java\mg\fini_station\pompes\Pompiste.java
@@ -12,5 +13,6 @@ C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_sta
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-ejb\src\main\java\mg\fini_station\stock\MesureReservoir.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-ejb\src\main\java\mg\fini_station\stock\Reservoir.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-ejb\src\main\java\mg\fini_station\utils\DbConn.java
+C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-ejb\src\main\java\mg\fini_station\utils\OracleConn.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-ejb\src\main\java\mg\fini_station\utils\UtilDb.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-ejb\src\main\java\mg\fini_station\utils\Utilitaire.java

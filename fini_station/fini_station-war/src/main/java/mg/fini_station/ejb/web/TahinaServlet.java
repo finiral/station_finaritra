@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import user.UserEJBClient;
-
 /**
  * A servlet which performs a JNDI lookup for a stateless EJB
  */
@@ -20,7 +18,7 @@ public class TahinaServlet extends HttpServlet {
             HttpServletResponse response) throws IOException {
         PrintWriter writer = response.getWriter();
         try {
-            writer.println(UserEJBClient.lookupUserEJBBeanLocal().getMaxId("COMPTA_ECRITURE"));
+            /* writer.println(UserEJBClient.lookupUserEJBBeanLocal().getMaxId("COMPTA_ECRITURE")); */
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -20,3 +20,16 @@ VALUES ('Jean Dupont'),
        ('Alain Bernard'),
        ('Sophie Durant'),
        ('Luc Robert');
+
+       -- Insertion de données de test dans la table MesureReservoir
+INSERT INTO MesureReservoir (mesureLongueur, mesureVolume, id_reservoir) VALUES
+(5.25, 100.50, 1), 
+(6.75, 120.30, 1), 
+(7.80, 140.75, 1), 
+(8.90, 160.20, 1),
+(4.50, 90.50, 1);
+
+INSERT INTO MesureReservoir (mesureLongueur, mesureVolume, id_reservoir) VALUES
+(1, 100, 1), 
+(10, 1000, 1)
+

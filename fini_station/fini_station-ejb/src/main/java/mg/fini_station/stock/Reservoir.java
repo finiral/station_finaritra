@@ -4,9 +4,13 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import ejb_fini.ComptaBeanClient;
+import mg.cnaps.compta.ComptaSousEcriture;
 import mg.fini_station.mvt.Depense;
 import mg.fini_station.mvt.StockReservoir;
 import mg.fini_station.utils.DbConn;
+import mg.fini_station.utils.OracleConn;
+import mg.fini_station.utils.Utilitaire;
 
 public class Reservoir {
     private String table_name = "Reservoir"; // Table name attribute
@@ -28,6 +32,44 @@ public class Reservoir {
 
     public Reservoir() {
     }
+
+    public MesureReservoir[] getMesures(Connection c) throws Exception {
+        PreparedStatement s = null;
+        ResultSet rs = null;
+        List<MesureReservoir> mesures = new ArrayList<>();
+    
+        try {
+            // Prépare une requête pour récupérer toutes les mesures associées à un réservoir spécifique
+            String query = "SELECT id_mesurereservoir, mesurelongueur, mesurevolume FROM MesureReservoir WHERE id_reservoir = ?";
+            s = c.prepareStatement(query);
+            s.setInt(1, this.getIdReservoir()); // Utilise l'ID du réservoir courant
+    
+            // Exécute la requête
+            rs = s.executeQuery();
+    
+            // Parcours des résultats et création des objets MesureReservoir
+            while (rs.next()) {
+                MesureReservoir mesure = new MesureReservoir();
+                mesure.setIdMesureReservoir(rs.getInt("id_mesurereservoir"));
+                mesure.setMesureLongueur(rs.getDouble("mesurelongueur")); // Longueur mesurée
+                mesure.setMesureVolume(rs.getDouble("mesurevolume"));     // Volume mesuré
+    
+                // Ajoute l'objet à la liste
+                mesures.add(mesure);
+            }
+    
+            // Conversion de la liste en tableau de MesureReservoir[]
+            return mesures.toArray(new MesureReservoir[0]);
+    
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            // Ferme les ressources
+            if (rs != null) rs.close();
+            if (s != null) s.close();
+        }
+    }
+    
 
     // Getters and Setters
     public int getIdReservoir() {
@@ -94,7 +136,10 @@ public class Reservoir {
         this.typeLiquide = typeLiquide;
     }
 
-    public MesureReservoir[] getMesures() {
+    public MesureReservoir[] getMesures() throws Exception {
+        if(this.mesures==null){
+            this.setMesures(this.getMesures(new DbConn().getConnection()));
+        }
         return mesures;
     }
 
@@ -244,6 +289,28 @@ public class Reservoir {
             double montant_depense = this.getTypeLiquide().getPrixUnitaireAchat() * qte;
             Depense d = new Depense(-89, qte, montant_depense, dt, "Achat de " + this.getTypeLiquide().getNomLiquide());
             d.insert(c);
+            // Ecriture vers centrale
+            ComptaBeanClient compta = new ComptaBeanClient();
+            // Création sous ecriture 601
+            ComptaSousEcriture cse = new ComptaSousEcriture();
+            cse.setCompte("6070000000000");
+            cse.setLibellePiece("Achat de " + this.getTypeLiquide().getNomLiquide());
+            cse.setRemarque("Achat de " + this.getTypeLiquide().getNomLiquide());
+            cse.setJournal("COMP000039");
+            cse.setDebit(montant_depense);
+            cse.setCredit(0);
+            cse.setDaty(Utilitaire.htmlTimestampToSqlDate(dt));
+            compta.lookupComptaBeanLocal().ecrireSousEcriture(new OracleConn().getConnection(), cse);
+            // Création sous ecriture 401
+            ComptaSousEcriture four = new ComptaSousEcriture();
+            four.setCompte("4010000000000");
+            four.setLibellePiece("Achat de " + this.getTypeLiquide().getNomLiquide());
+            four.setRemarque("Achat de " + this.getTypeLiquide().getNomLiquide());
+            four.setJournal("COMP000039");
+            four.setDebit(0);
+            four.setCredit(montant_depense);
+            four.setDaty(Utilitaire.htmlTimestampToSqlDate(dt));
+            compta.lookupComptaBeanLocal().ecrireSousEcriture(new OracleConn().getConnection(), four);
             c.commit();
         } catch (Exception e) {
             c.rollback();

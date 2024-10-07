@@ -14,10 +14,10 @@ CREATE TABLE Liquide(
 
 CREATE TABLE Depense(
    id_depense NUMBER(10),
-   intitule VARCHAR2(50)  NOT NULL,
-   montant_total NUMBER(15,2)   NOT NULL,
+   motif VARCHAR2(50)  NOT NULL,
+   montant NUMBER(15,2)   NOT NULL,
    qte NUMBER(10) NOT NULL,
-   date_depense DATE NOT NULL,
+   date_depense TIMESTAMP NOT NULL,
    PRIMARY KEY(id_depense)
 );
 
@@ -31,7 +31,7 @@ CREATE TABLE Reservoir(
 
 CREATE TABLE StockReservoir(
    id_stockreservoir NUMBER(10),
-   dt_stock DATE NOT NULL,
+   dt_stock TIMESTAMP NOT NULL,
    qte_stock NUMBER(15,2)   NOT NULL,
    id_reservoir NUMBER(10) NOT NULL,
    PRIMARY KEY(id_stockreservoir),

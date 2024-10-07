@@ -10,23 +10,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.itextpdf.text.List;
+
 import mg.fini_station.mvt.Encaissement;
+import mg.fini_station.pompes.Pompe;
+import mg.fini_station.pompes.Pompiste;
 import mg.fini_station.pompes.Prelevement;
 
 @WebServlet("/encaissement")
 public class EncaissementServlet extends HttpServlet {
+    protected void prepDispatch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        req.setAttribute("prelevements", new Prelevement().getAll());
+        req.getRequestDispatcher("pages/encaissementForm.jsp").forward(req, resp);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            if(req.getParameter("error")!=null){
-                req.setAttribute("etat",req.getParameter("error"));
-            }
-            else if(req.getParameter("success")!=null){
-                req.setAttribute("etat","Insertion prelevemenet réussi");
-            }
-            req.setAttribute("prelevements", new Prelevement().getAll());
-            req.getRequestDispatcher("pages/encaissementForm.jsp").forward(req, resp);
+            prepDispatch(req, resp);
         } catch (Exception ex) {
             Logger.getLogger(EncaissementServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -38,15 +39,21 @@ public class EncaissementServlet extends HttpServlet {
             int id_prelevement = Integer.parseInt(req.getParameter("id_prelevement"));
             String dt_time = req.getParameter("dt_time");
             double montant = Double.parseDouble(req.getParameter("montant"));
-            Prelevement p=new Prelevement();
-            p.setIdPrelevement(id_prelevement);
-            new Encaissement(-89, montant,p, dt_time).encaisser();
-            resp.sendRedirect("encaissement?success=1");
+            Prelevement p = new Prelevement().getById(id_prelevement);
+            new Encaissement(-89, montant, p, dt_time).encaisser();
+            req.setAttribute("etat","Encaissement reussi !");
+            prepDispatch(req, resp);
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            resp.sendRedirect("encaissement?error="+e.getMessage());
+            try {
+                req.setAttribute("etat", e.getMessage());
+                prepDispatch(req, resp);
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
 
         }
     }

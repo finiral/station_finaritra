@@ -5,16 +5,6 @@
 <%
     // Obtenez la liste des pr�l�vements depuis l'attribut de la requ�te
     List<Reservoir> ls_reservoir = (List<Reservoir>) request.getAttribute("ls_reservoir");
-
-    // V�rification de l'attribut 'etat' pour les messages de succ�s ou d'erreur
-    if (request.getAttribute("etat") != null) { 
-        String etat = (String) request.getAttribute("etat");
-%>
-        <script type="text/javascript">
-            alert("<%= etat.replace("\"", "\\\"") %>"); // Afficher un message d'alerte en fonction de l'�tat
-        </script>
-<% 
-    }
 %>
 
 <form method="POST" action="reservoirPrelev">

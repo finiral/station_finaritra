@@ -5,12 +5,15 @@ mg\fini_station\utils\UtilDb.class
 mg\fini_station\ejb\TestBean.class
 mg\fini_station\mvt\Encaissement.class
 mg\fini_station\mvt\Depense.class
+mg\fini_station\utils\OracleConn.class
 mg\fini_station\stock\Liquide.class
 mg\fini_station\utils\Utilitaire.class
 mg\fini_station\stock\Reservoir.class
 mg\fini_station\mvt\Benefice.class
 mg\fini_station\mvt\StockReservoir.class
 mg\fini_station\pompes\Pompe.class
+mg\fini_station\mvt\PrelevementReservoir$1.class
 mg\fini_station\stock\MesureReservoir.class
 mg\fini_station\pompes\Prelevement.class
 mg\fini_station\utils\DbConn.class
+mg\fini_station\mvt\PrelevementReservoir.class
