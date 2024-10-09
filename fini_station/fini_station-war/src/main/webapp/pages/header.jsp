@@ -11,17 +11,26 @@
     <div class="navbar">
         <a class="navbar-brand" href="#">Gestion station perso</a>
         <ul class="nav navbar-nav">
-            <li class="active">
-                <a href="./prelevement">Prelevement</a>
+            <li>
+                <a href="./reservoirPrelev">Prelevement Cuve</a>
+            </li>
+            <li>
+                <a href="./prelevement">Prelevement Reservoir</a>
+            </li>
+            <li>
+                <a href="./stock">Stock et anomalies</a>
             </li>
             <li>
                 <a href="./encaissement">Encaissement</a>
             </li>
             <li>
-                <a href="./reservoir">Reservoir</a>
+                <a href="./reservoir">Achat liquide Reservoir</a>
             </li>
             <li>
                 <a href="./benefices">Benefice</a>
+            </li>
+            <li>
+                <a href="">Prevision</a>
             </li>
         </ul>
     </div>

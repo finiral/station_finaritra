@@ -21,6 +21,7 @@ import mg.fini_station.pompes.Prelevement;
 public class EncaissementServlet extends HttpServlet {
     protected void prepDispatch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         req.setAttribute("prelevements", new Prelevement().getAll());
+        req.setAttribute("encaissements", new Encaissement().getAll());
         req.getRequestDispatcher("pages/encaissementForm.jsp").forward(req, resp);
     }
 

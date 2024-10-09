@@ -10,6 +10,7 @@ mg\fini_station\stock\Liquide.class
 mg\fini_station\utils\Utilitaire.class
 mg\fini_station\stock\Reservoir.class
 mg\fini_station\mvt\Benefice.class
+mg\fini_station\utils\Fonctions.class
 mg\fini_station\mvt\StockReservoir.class
 mg\fini_station\pompes\Pompe.class
 mg\fini_station\mvt\PrelevementReservoir$1.class

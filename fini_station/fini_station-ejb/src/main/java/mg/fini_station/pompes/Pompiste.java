@@ -60,11 +60,21 @@ public class Pompiste {
     // Retrieve all Pompiste records
     public List<Pompiste> getAll() throws Exception {
         Connection c = null;
-        PreparedStatement s = null;
-        ResultSet rs = null;
         try {
             DbConn db = new DbConn();
             c = db.getConnection();
+            return this.getAll(c);
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (c != null) c.close();
+        }
+    }
+
+    public List<Pompiste> getAll(Connection c) throws Exception {
+        PreparedStatement s = null;
+        ResultSet rs = null;
+        try {
             s = c.prepareStatement("SELECT * FROM " + this.table_name);
             rs = s.executeQuery();
             List<Pompiste> res = new ArrayList<>();
@@ -80,7 +90,6 @@ public class Pompiste {
         } finally {
             if (rs != null) rs.close();
             if (s != null) s.close();
-            if (c != null) c.close();
         }
     }
 

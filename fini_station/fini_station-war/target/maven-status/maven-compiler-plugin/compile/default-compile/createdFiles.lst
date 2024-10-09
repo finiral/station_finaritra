@@ -3,5 +3,6 @@ mg\fini_station\ejb\web\EncaissementServlet.class
 mg\fini_station\ejb\web\ReservoirServlet.class
 mg\fini_station\ejb\web\FormPrelevementServlet.class
 mg\fini_station\ejb\web\PrelevementCuveServlet.class
+mg\fini_station\ejb\web\StockServlet.class
 mg\fini_station\ejb\web\BeneficesServlet.class
 mg\fini_station\ejb\web\TahinaServlet.class

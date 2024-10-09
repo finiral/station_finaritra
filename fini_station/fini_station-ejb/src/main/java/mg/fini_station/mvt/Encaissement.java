@@ -91,8 +91,6 @@ public class Encaissement {
     public void insert(Connection c) throws Exception {
         PreparedStatement s = null;
         try {
-            DbConn db = new DbConn();
-            c = db.getConnection();
             s = c.prepareStatement("INSERT INTO " + this.table_name
                     + " (montant_encaissement, dateheure_encaissement, id_prelevement) VALUES (?, ?, ?)");
             s.setDouble(1, this.getMontant());
@@ -254,7 +252,6 @@ public class Encaissement {
             four.setDaty(Utilitaire.convertTimestampToDate(this.getDt()));
             compta.lookupComptaBeanLocal().ecrireSousEcriture(new OracleConn().getConnection(), four);
             // Creditation client divers (RAHA TSISI AVOIR)
-            c.commit();
             ComptaSousEcriture client = new ComptaSousEcriture();
             client.setCompte("4110000000000");
             client.setLibellePiece("Avoir " + this.getPrelevement().getPompe().getNumeroPompe());
@@ -264,6 +261,7 @@ public class Encaissement {
             client.setCredit(this.getMontant());
             client.setDaty(Utilitaire.convertTimestampToDate(this.getDt()));
             compta.lookupComptaBeanLocal().ecrireSousEcriture(new OracleConn().getConnection(), client);
+            c.commit();
         } catch (Exception e) {
             c.rollback();
             throw e;

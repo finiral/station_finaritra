@@ -94,8 +94,6 @@ public class Depense {
     public void insert(Connection c) throws Exception {
         PreparedStatement s = null;
         try {
-            DbConn db = new DbConn();
-            c = db.getConnection();
             s = c.prepareStatement("INSERT INTO " + this.table_name + " (qte, montant, date_depense, motif) VALUES (?, ?, ?, ?)");
             s.setDouble(1, this.getQte()); // Set qte in the statement
             s.setDouble(2, this.getMontant());

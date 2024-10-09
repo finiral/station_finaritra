@@ -1,5 +1,5 @@
 package mg.fini_station.ejb.web;
-
+import java.sql.Connection;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -14,13 +14,18 @@ import javax.servlet.http.HttpServletResponse;
 import mg.fini_station.pompes.Pompe;
 import mg.fini_station.pompes.Pompiste;
 import mg.fini_station.pompes.Prelevement;
+import mg.fini_station.utils.DbConn;
 
 @WebServlet("/prelevement")
 public class FormPrelevementServlet extends HttpServlet {
 
     protected void prepDispatch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        List<Pompiste> ls_pompiste = new Pompiste().getAll();
-        List<Pompe> ls_pompe = new Pompe().getAll();
+        Connection c=new DbConn().getConnection();
+        List<Prelevement> ls_prelevement=new Prelevement().getAll(c);
+        List<Pompiste> ls_pompiste = new Pompiste().getAll(c);
+        List<Pompe> ls_pompe = new Pompe().getAll(c);
+        c.close();
+        req.setAttribute("prelevements", ls_prelevement);
         req.setAttribute("pompistes", ls_pompiste);
         req.setAttribute("pompes", ls_pompe);
         req.getRequestDispatcher("pages/prelevementForm.jsp").forward(req, resp);

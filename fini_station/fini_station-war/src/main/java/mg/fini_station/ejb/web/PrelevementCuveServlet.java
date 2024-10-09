@@ -1,6 +1,7 @@
 package mg.fini_station.ejb.web;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,14 +10,20 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import mg.fini_station.mvt.PrelevementReservoir;
 import mg.fini_station.stock.*;
+import mg.fini_station.utils.DbConn;
 
 @WebServlet("/reservoirPrelev")
 public class PrelevementCuveServlet extends HttpServlet {
     protected void prepDispatch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        List<Reservoir> ls_reservoir = new Reservoir().getAll();
+        Connection c = new DbConn().getConnection();
+        List<Reservoir> ls_reservoir = new Reservoir().getAll(c);
+        List<PrelevementReservoir> ls_prelevements=new PrelevementReservoir().getAll(c);
+        c.close();
         req.setAttribute("ls_reservoir", ls_reservoir);
-        req.getRequestDispatcher("reservoirPrelev.jsp").forward(req, resp);
+        req.setAttribute("prelevements", ls_prelevements);
+        req.getRequestDispatcher("pages/reservoirPrelev.jsp").forward(req, resp);
     }
 
     @Override
@@ -27,7 +34,6 @@ public class PrelevementCuveServlet extends HttpServlet {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        req.getRequestDispatcher("pages/reservoirPrelev.jsp").forward(req, resp);
     }
 
     @Override
@@ -37,7 +43,8 @@ public class PrelevementCuveServlet extends HttpServlet {
             String dt_time = req.getParameter("dt_time");
             String mesure = req.getParameter("mesure");
             Reservoir r = new Reservoir().getById(id_reservoir);
-            r.prelever(mesure, dt_time);
+            PrelevementReservoir pr=new PrelevementReservoir(-87, mesure,dt_time, r);
+            pr.prelever();
             req.setAttribute("etat", "Insertion Prelevement reussi ");
             prepDispatch(req, resp);
 

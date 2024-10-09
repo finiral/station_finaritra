@@ -81,6 +81,7 @@ CREATE TABLE PrelevementReservoir(
    id_prelevementreservoir SERIAL,
    longueur NUMERIC(15,2)   NOT NULL,
    date_prelevement DATE NOT NULL,
+   volume_prelevement NUMERIC(15,2)   NOT NULL,
    id_reservoir INTEGER NOT NULL,
    PRIMARY KEY(id_prelevementreservoir),
    FOREIGN KEY(id_reservoir) REFERENCES Reservoir(id_reservoir)

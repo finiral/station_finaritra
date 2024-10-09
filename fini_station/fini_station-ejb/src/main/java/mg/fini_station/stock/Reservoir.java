@@ -88,17 +88,18 @@ public class Reservoir {
         this.qteMax = qteMax;
     }
 
-    public double getQteActuel() {
-        return qteActuel;
+    public double getQteActuel() throws Exception {
+        if(this.qteActuel!=0 && this.qteActuel>0){
+            return qteActuel;
+        }
+        Connection c=new DbConn().getConnection();
+        this.setQteActuel(this.getQteActuel(c));
+        c.close();
+        return this.qteActuel;
+
     }
 
-    public void setQteActuel(double qteActuel) {
-        this.qteActuel = qteActuel;
-    }
-
-    // Set the current quantity by checking in the StockReservoir table
-    public void setQteActuel() throws Exception {
-        Connection c = null;
+    public double getQteActuel(Connection c) throws Exception {
         PreparedStatement s = null;
         ResultSet rs = null;
         try {
@@ -108,14 +109,12 @@ public class Reservoir {
             s = c.prepareStatement("SELECT SUM(qte_stock) AS totalStock FROM StockReservoir WHERE id_reservoir = ?");
             s.setInt(1, this.getIdReservoir());
             rs = s.executeQuery();
-
+            double qteActuel=0;
             if (rs.next()) {
                 // Set qteActuel based on the sum of all stock quantities for this reservoir
-                this.qteActuel = rs.getDouble("totalStock");
-            } else {
-                // If no records found, set qteActuel to 0
-                this.qteActuel = 0;
+                qteActuel = rs.getDouble("totalStock");
             }
+            return qteActuel;
         } catch (Exception e) {
             throw e;
         } finally {
@@ -123,9 +122,11 @@ public class Reservoir {
                 rs.close();
             if (s != null)
                 s.close();
-            if (c != null)
-                c.close();
         }
+    }
+
+    public void setQteActuel(double qteActuel) {
+        this.qteActuel = qteActuel;
     }
 
     public Liquide getTypeLiquide() {
@@ -138,7 +139,9 @@ public class Reservoir {
 
     public MesureReservoir[] getMesures() throws Exception {
         if(this.mesures==null){
-            this.setMesures(this.getMesures(new DbConn().getConnection()));
+            Connection c=new DbConn().getConnection();
+            this.setMesures(this.getMesures(c));
+            c.close();
         }
         return mesures;
     }
@@ -171,13 +174,10 @@ public class Reservoir {
     }
 
     // Retrieve all Reservoir records
-    public List<Reservoir> getAll() throws Exception {
-        Connection c = null;
+    public List<Reservoir> getAll(Connection c) throws Exception {
         PreparedStatement s = null;
         ResultSet rs = null;
         try {
-            DbConn db = new DbConn();
-            c = db.getConnection();
             s = c.prepareStatement("SELECT * FROM " + this.table_name);
             rs = s.executeQuery();
             List<Reservoir> res = new ArrayList<>();
@@ -197,11 +197,21 @@ public class Reservoir {
                 rs.close();
             if (s != null)
                 s.close();
+        }
+    }
+    public List<Reservoir> getAll() throws Exception {
+        Connection c = null;
+        try {
+            DbConn db = new DbConn();
+            c = db.getConnection();
+            return this.getAll(c);
+        } catch (Exception e) {
+            throw e;
+        } finally {
             if (c != null)
                 c.close();
         }
     }
-
     // Retrieve a Reservoir by ID
     public Reservoir getById(int id) throws Exception {
         Connection c = null;
@@ -321,7 +331,4 @@ public class Reservoir {
         }
     }
 
-    public void prelever(String mesure, String dt) throws Exception {
-        System.out.println("Prelevement fait le " + dt + " de mesure " + mesure);
-    }
 }

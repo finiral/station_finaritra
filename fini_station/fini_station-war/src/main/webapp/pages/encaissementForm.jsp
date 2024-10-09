@@ -1,9 +1,11 @@
 <%@page import="mg.fini_station.pompes.Prelevement"%>
+<%@page import="mg.fini_station.mvt.Encaissement"%>
 <%@page import="java.util.List"%>
 <%@ include file="header.jsp" %>
 <%
     // Obtenez la liste des pr�l�vements depuis l'attribut de la requ�te
     List<Prelevement> ls_prelevement = (List<Prelevement>) request.getAttribute("prelevements");
+        List<Encaissement> encaissements = (List<Encaissement>) request.getAttribute("encaissements");
 
     // V�rification de l'attribut 'etat' pour les messages de succ�s ou d'erreur
 %>
@@ -38,5 +40,28 @@
 
     <input type="submit" value="Valider le prelevement">
 </form>
+
+<div class="table-responsive table-bordered">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Prelevement</th>
+                <th>Montant</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%
+                for(Encaissement p:encaissements){
+            %>
+            <tr>
+                <td><%=p.getPrelevement().getIdPrelevement()%></td>
+                <td><%=p.getMontant()%></td>
+                <td><%=p.getDt()%></td>
+            </tr>
+            <% }%>
+        </tbody>
+    </table>
+</div>
 
 <%@ include file="footer.jsp" %>

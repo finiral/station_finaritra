@@ -102,13 +102,15 @@ public class PrelevementReservoir {
 
     }
 
-   /*  public static void main(String[] args) throws Exception {
-        PrelevementReservoir p = new PrelevementReservoir();
-        p.setLongueur("9.9cm");
-        p.setR(new Reservoir().getById(1));
-        System.out.println(p.getVolume());
-        System.out.println(p.getR().getMesures()[0].getMesureLongueur());
-    } */
+    /*
+     * public static void main(String[] args) throws Exception {
+     * PrelevementReservoir p = new PrelevementReservoir();
+     * p.setLongueur("3cm");
+     * p.setR(new Reservoir().getById(1));
+     * System.out.println(p.getVolume());
+     * System.out.println(p.getR().getMesures()[0].getMesureLongueur());
+     * }
+     */
 
     public void setVolume(double volume) {
         this.volume = volume;
@@ -128,6 +130,7 @@ public class PrelevementReservoir {
         setLongueur(longueur);
         setdtPrelevement(dtPrelevement);
         setVolume(volume);
+        setR(r);
 
     }
 
@@ -137,6 +140,16 @@ public class PrelevementReservoir {
         setLongueur(longueur);
         setdtPrelevement(dtPrelevement);
         setVolume(volume);
+        setR(r);
+
+    }
+
+    public PrelevementReservoir(int idPrelevementReservoir, String longueur, String dtPrelevement,
+            Reservoir r) throws Exception {
+        setIdPrelevementReservoir(idPrelevementReservoir);
+        setLongueur(longueur);
+        setdtPrelevement(dtPrelevement);
+        setR(r);
 
     }
 
@@ -148,14 +161,14 @@ public class PrelevementReservoir {
         try {
             // Prépare la requête d'insertion
             String query = "INSERT INTO " + this.table_name
-                    + " (longueur, date_prelevement, id_reservoir) VALUES (?, ?, ?)";
+                    + " (longueur, date_prelevement, id_reservoir,volume_prelevement) VALUES (?, ?, ?,?)";
             s = c.prepareStatement(query);
 
             // Définit les paramètres de la requête
             s.setDouble(1, this.getLongueur());
             s.setDate(2, this.getdtPrelevement());
             s.setInt(3, this.getR().getIdReservoir()); // ID du réservoir associé
-
+            s.setDouble(4, this.getVolume());
             // Exécute la requête
             s.executeUpdate();
         } catch (Exception e) {
@@ -185,6 +198,7 @@ public class PrelevementReservoir {
                 pr.setLongueur(rs.getDouble("longueur"));
                 pr.setdtPrelevement(rs.getDate("date_prelevement"));
                 pr.setR(new Reservoir().getById(rs.getInt("id_reservoir"))); // Récupère le réservoir associé
+                pr.setVolume(rs.getDouble("volume_prelevement"));
             }
 
             return pr;
@@ -216,6 +230,7 @@ public class PrelevementReservoir {
                 pr.setLongueur(rs.getDouble("longueur"));
                 pr.setdtPrelevement(rs.getDate("date_prelevement"));
                 pr.setR(new Reservoir().getById(rs.getInt("id_reservoir"))); // Récupère le réservoir associé
+                pr.setVolume(rs.getDouble("volume_prelevement"));
                 prelevements.add(pr);
             }
 
@@ -230,4 +245,20 @@ public class PrelevementReservoir {
         }
     }
 
+    public void prelever() throws Exception {
+        Connection c = null;
+        try {
+            System.out.println("Prelevement fait le " + this.getdtPrelevement() + " de mesure " + this.getLongueur());
+            c = new DbConn().getConnection();
+            c.setAutoCommit(false);
+            this.insert(c);
+            c.commit();
+        } catch (Exception e) {
+            c.rollback();
+            throw e;
+        } finally {
+            c.close();
+        }
+
+    }
 }

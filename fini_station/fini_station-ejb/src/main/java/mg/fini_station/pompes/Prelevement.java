@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mg.fini_station.mvt.StockReservoir;
-import mg.fini_station.stock.Reservoir;
 import mg.fini_station.utils.DbConn;
 import mg.fini_station.utils.Utilitaire;
 
@@ -95,8 +94,6 @@ public class Prelevement {
     public void insert(Connection c) throws Exception {
         PreparedStatement s = null;
         try {
-            DbConn db = new DbConn();
-            c = db.getConnection();
             s = c.prepareStatement(
                     "INSERT INTO Prelevement (id_pompiste, id_pompe, compteur_prelevement, dateheure_prelevement) VALUES (?,?,?,?)");
             s.setInt(1, this.getPompiste().getIdPompiste());
@@ -116,11 +113,23 @@ public class Prelevement {
     // Retrieve all Prelevement records
     public List<Prelevement> getAll() throws Exception {
         Connection c = null;
-        PreparedStatement s = null;
-        ResultSet rs = null;
         try {
             DbConn db = new DbConn();
             c = db.getConnection();
+            return this.getAll(c);
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+    }
+
+    public List<Prelevement> getAll(Connection c) throws Exception {
+        PreparedStatement s = null;
+        ResultSet rs = null;
+        try {
             s = c.prepareStatement("SELECT * FROM " + this.table_name);
             rs = s.executeQuery();
             List<Prelevement> res = new ArrayList<>();
@@ -144,9 +153,6 @@ public class Prelevement {
             }
             if (s != null) {
                 s.close();
-            }
-            if (c != null) {
-                c.close();
             }
         }
     }
@@ -256,8 +262,6 @@ public class Prelevement {
         ResultSet rs = null;
         List<Prelevement> res = new ArrayList<>();
         try {
-            DbConn db = new DbConn();
-            c = db.getConnection();
             s = c.prepareStatement("SELECT * FROM " + this.table_name + " WHERE id_pompe = ?");
             s.setInt(1, idPompe);
             rs = s.executeQuery();
@@ -303,8 +307,6 @@ public class Prelevement {
         ResultSet rs = null;
         List<Prelevement> res = new ArrayList<>();
         try {
-            DbConn db = new DbConn();
-            c = db.getConnection();
             // Modified query to order by date in descending order
             s = c.prepareStatement(
                     "SELECT * FROM " + this.table_name + " WHERE id_pompe = ? ORDER BY dateheure_prelevement DESC");
@@ -366,7 +368,6 @@ public class Prelevement {
                 double new_qte=-this.getDifferenceCompteur(c);
                 StockReservoir s=new StockReservoir(-78,this.getDateTime(),new_qte,this.getPompe().getReservoir());
                 s.insert(c);
-
             }
             c.commit();
 

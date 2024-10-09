@@ -83,11 +83,21 @@ public class Pompe {
     // Retrieve all Pompe records
     public List<Pompe> getAll() throws Exception {
         Connection c = null;
-        PreparedStatement s = null;
-        ResultSet rs = null;
         try {
             DbConn db = new DbConn();
             c = db.getConnection();
+            return this.getAll(c);
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (c != null) c.close();
+        }
+    }
+
+    public List<Pompe> getAll(Connection c) throws Exception {
+        PreparedStatement s = null;
+        ResultSet rs = null;
+        try {
             s = c.prepareStatement("SELECT * FROM " + this.table_name);
             rs = s.executeQuery();
             List<Pompe> res = new ArrayList<>();
@@ -105,7 +115,6 @@ public class Pompe {
         } finally {
             if (rs != null) rs.close();
             if (s != null) s.close();
-            if (c != null) c.close();
         }
     }
 

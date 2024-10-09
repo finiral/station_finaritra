@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 
 public class Utilitaire {
     public static Timestamp parseToTimestamp(String datetimeLocal) {
@@ -78,5 +79,21 @@ public class Utilitaire {
             throw new Exception("Format numérique invalide.");
         }
     }
+    public static Timestamp convertDateToTimestamp(Date date) {
+        if (date == null) {
+            return null; // Gestion des valeurs nulles
+        }
+        // Conversion de java.sql.Date en java.sql.Timestamp
+        return new Timestamp(date.getTime());
+    }
     
+     public static Date addDays(Date date, int days) {
+        // Utiliser un objet Calendar pour manipuler la date
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date); // Initialiser la date du Calendar avec la date SQL
+        cal.add(Calendar.DAY_OF_MONTH, days); // Ajouter les jours
+
+        // Retourner une nouvelle java.sql.Date avec la date mise à jour
+        return new Date(cal.getTimeInMillis());
+    }
 }

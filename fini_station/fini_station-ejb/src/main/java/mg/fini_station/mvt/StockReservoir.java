@@ -16,6 +16,46 @@ public class StockReservoir {
     private int idStockReservoir;
     private Timestamp dt; // Utilisation de Date
     private double qte;
+    private double qteTotal;
+    public double getQteTotal() throws Exception {
+        if(this.qteTotal!=0 && this.qteTotal>0){
+        }
+        else{
+            Connection c=new DbConn().getConnection();
+            this.setQteTotal(this.getQteTotal(c));
+            c.close();
+        }
+        return qteTotal;
+    }
+
+    public double getQteTotal(Connection c) throws Exception {
+        PreparedStatement s = null;
+        ResultSet rs = null;
+        try {
+            // Query to sum the quantities in StockReservoir for the specific Reservoir
+            s = c.prepareStatement("SELECT SUM(qte_stock) AS totalStock FROM StockReservoir");
+            rs = s.executeQuery();
+            double qteTotal=0;
+            if (rs.next()) {
+                // Set qteTotal based on the sum of all stock quantities for this reservoir
+                qteTotal=rs.getDouble("totalStock");
+            }
+            return qteTotal;
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (rs != null)
+                rs.close();
+            if (s != null)
+                s.close();
+        }
+    }
+
+
+    public void setQteTotal(double qteTotal) {
+        this.qteTotal = qteTotal;
+    }
+
     private Reservoir reserv;
 
     // Constructors
@@ -91,8 +131,6 @@ public class StockReservoir {
     public void insert(Connection c) throws Exception {
         PreparedStatement s = null;
         try {
-            DbConn db = new DbConn();
-            c = db.getConnection();
             s = c.prepareStatement("INSERT INTO " + this.table_name + " (dt_stock, qte_stock, id_reservoir) VALUES (?, ?, ?)");
             s.setTimestamp(1, this.getDt());
             s.setDouble(2, this.getQte());
