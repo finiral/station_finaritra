@@ -1,12 +1,12 @@
 package mg.fini_station.stock;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
-import mg.fini_station.mvt.PrelevementReservoir;
 import mg.fini_station.utils.DbConn;
 import mg.fini_station.utils.Utilitaire;
 
@@ -16,6 +16,31 @@ public class Anomalie {
     double qtePrelevement;
     double difference;
     Date dt;
+
+    public List<Anomalie> getAllAnomalie(List<Reservoir> reservoirs ,Date dt) throws Exception{
+        List<Anomalie> ls=new ArrayList<Anomalie>();
+        for (Reservoir reservoir : reservoirs) {
+            Anomalie a=new Anomalie();
+            a.setDt(dt);
+            a.setReservoir(reservoir);
+            if(a.getDifference()!=0){
+                ls.add(a);
+            }
+        }
+        return ls;
+    }
+
+    public List<Anomalie> getAllAnomalie(List<Reservoir> reservoirs) throws Exception{
+        List<Anomalie> ls=new ArrayList<Anomalie>();
+        for (Reservoir reservoir : reservoirs) {
+            Anomalie a=new Anomalie();
+            a.setReservoir(reservoir);
+            if(a.getDifference()!=0){
+                ls.add(a);
+            }
+        }
+        return ls;
+    }
 
     public Date getDt() throws Exception {
         if (this.dt == null) {
@@ -77,7 +102,7 @@ public class Anomalie {
         PreparedStatement s = null;
         ResultSet rs = null;
         try {
-            Date old_dt = (Date) this.getDt(c).clone();
+            Date old_dt = (Date) this.getDt().clone();
             Timestamp new_dt = Utilitaire.convertDateToTimestamp(Utilitaire.addDays(old_dt, 1));
             // Query to sum the quantities in StockReservoir for the specific Reservoir
             s = c.prepareStatement(

@@ -119,7 +119,7 @@ public class Encaissement {
             while (rs.next()) {
                 Encaissement encaissement = new Encaissement();
                 encaissement.setIdEncaissement(rs.getInt("id_encaissement"));
-                encaissement.setMontant(rs.getDouble("montant"));
+                encaissement.setMontant(rs.getDouble("montant_encaissement"));
                 encaissement.setDt(rs.getTimestamp("dateheure_encaissement"));
 
                 // Retrieve Prelevement object
@@ -157,7 +157,7 @@ public class Encaissement {
             if (rs.next()) {
                 encaissement = new Encaissement();
                 encaissement.setIdEncaissement(rs.getInt("id_encaissement"));
-                encaissement.setMontant(rs.getDouble("montant"));
+                encaissement.setMontant(rs.getDouble("montant_encaissement"));
                 encaissement.setDt(rs.getTimestamp("dateheure_encaissement"));
 
                 // Retrieve Prelevement object
@@ -186,7 +186,7 @@ public class Encaissement {
             DbConn db = new DbConn();
             c = db.getConnection();
             s = c.prepareStatement("UPDATE " + this.table_name
-                    + " SET montant = ?, dateheure_encaissement = ?, id_prelevement = ? WHERE id_encaissement = ?");
+                    + " SET montant_encaissement = ?, dateheure_encaissement = ?, id_prelevement = ? WHERE id_encaissement = ?");
             s.setDouble(1, this.getMontant());
             s.setTimestamp(2, this.getDt());
             s.setInt(3, this.getPrelevement().getIdPrelevement()); // Update Prelevement ID
@@ -220,6 +220,10 @@ public class Encaissement {
             if (c != null)
                 c.close();
         }
+    }
+
+    public double getDifferencePrelevementEtEncaisser() throws Exception{
+        return this.getPrelevement().getDifferenceCompteurVola()-this.getMontant();
     }
 
     public void encaisser() throws Exception {

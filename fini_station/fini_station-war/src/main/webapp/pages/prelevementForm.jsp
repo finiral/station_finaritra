@@ -1,4 +1,4 @@
-<%@page import="pompe.Pompe"%>
+<%@page import="mg.fini_station.pompes.Pompe"%>
 <%@page import="mg.fini_station.pompes.Pompiste"%>
 <%@page import="mg.fini_station.pompes.Prelevement"%>
 <%@page import="java.util.List"%>

@@ -14,12 +14,12 @@
     <packaging>war</packaging>
 
     <name>WAR Module</name>
-    <repositories>
+    <!-- <repositories>
         <repository>
             <id>local-repo</id>
             <url>file:///C:/Users/USER/College/ANNEE3/S5/ArchiLog/S5 p16/S5 p16/moteurapj/build-file/ear</url>
         </repository>
-    </repositories>
+    </repositories> -->
     <dependencies>
         <dependency>
             <groupId>javax</groupId>

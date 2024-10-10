@@ -15,6 +15,7 @@ mg\fini_station\mvt\StockReservoir.class
 mg\fini_station\pompes\Pompe.class
 mg\fini_station\mvt\PrelevementReservoir$1.class
 mg\fini_station\stock\MesureReservoir.class
+mg\fini_station\stock\Anomalie.class
 mg\fini_station\pompes\Prelevement.class
 mg\fini_station\utils\DbConn.class
 mg\fini_station\mvt\PrelevementReservoir.class

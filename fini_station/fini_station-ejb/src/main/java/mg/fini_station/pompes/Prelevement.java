@@ -262,8 +262,10 @@ public class Prelevement {
         ResultSet rs = null;
         List<Prelevement> res = new ArrayList<>();
         try {
-            s = c.prepareStatement("SELECT * FROM " + this.table_name + " WHERE id_pompe = ?");
+            s = c.prepareStatement(
+                    "SELECT * FROM " + this.table_name + " WHERE id_pompe = ? and dateheure_prelevement<?");
             s.setInt(1, idPompe);
+            s.setTimestamp(2, this.getDateTime());
             rs = s.executeQuery();
             while (rs.next()) {
                 Prelevement p = new Prelevement();
@@ -309,8 +311,10 @@ public class Prelevement {
         try {
             // Modified query to order by date in descending order
             s = c.prepareStatement(
-                    "SELECT * FROM " + this.table_name + " WHERE id_pompe = ? ORDER BY dateheure_prelevement DESC");
+                    "SELECT * FROM " + this.table_name
+                            + " WHERE id_pompe = ? and dateheure_prelevement < ? ORDER BY dateheure_prelevement DESC");
             s.setInt(1, idPompe);
+            s.setTimestamp(2, this.getDateTime());
             rs = s.executeQuery();
             while (rs.next()) {
                 Prelevement p = new Prelevement();
@@ -333,23 +337,38 @@ public class Prelevement {
         return res;
     }
 
-    public double getDifferenceCompteur(Connection c) throws Exception{
-        List<Prelevement> ls=this.getByIdPompeDtDesc(c, this.getPompe().getIdPompe());
-        return ls.get(0).getCompteur()-ls.get(1).getCompteur();      
+    public double getDifferenceCompteur(Connection c) throws Exception {
+        List<Prelevement> ls = this.getByIdPompeDtDesc(c, this.getPompe().getIdPompe());
+        return this.getCompteur() - ls.get(0).getCompteur();
     }
 
-    public double getDifferenceCompteurVola(Connection c) throws Exception{
-        return this.getDifferenceCompteur(c)*this.getPompe().getReservoir().getTypeLiquide().getPrixUnitaireVente();
+    public double getDifferenceCompteur() throws Exception {
+        Connection c=new DbConn().getConnection();
+        double res=this.getDifferenceCompteur(c);
+        c.close();
+        return res;
+    }
+
+    public double getDifferenceCompteurVola(Connection c) throws Exception {
+        double res=this.getDifferenceCompteur(c) * this.getPompe().getReservoir().getTypeLiquide().getPrixUnitaireVente();
+        return res;
+    }
+
+    public double getDifferenceCompteurVola() throws Exception {
+        Connection c=new DbConn().getConnection();
+        double res=this.getDifferenceCompteurVola(c);
+        c.close();
+        return res;
     }
 
     public boolean isStatePair(Connection c) throws Exception {
         List<Prelevement> ls = this.getByIdPompe(c, this.getPompe().getIdPompe());
-        return ls.size() % 2 == 0;
+        return ls.size() % 2 != 0;
     }
 
     public boolean isStatePair() throws Exception {
         List<Prelevement> ls = this.getByIdPompe(this.getPompe().getIdPompe());
-        return ls.size() % 2 == 0;
+        return ls.size() % 2 != 0;
     }
 
     public void prelever() throws Exception {
@@ -358,15 +377,15 @@ public class Prelevement {
             DbConn db = new DbConn();
             c = db.getConnection();
             c.setAutoCommit(false);
-            if (this.isStatePair(c)) {
+            if (!this.isStatePair(c)) {
                 // c'est une entree
                 this.insert(c);
 
             } else {
                 // c'est une sortie
                 this.insert(c);
-                double new_qte=-this.getDifferenceCompteur(c);
-                StockReservoir s=new StockReservoir(-78,this.getDateTime(),new_qte,this.getPompe().getReservoir());
+                double new_qte = -this.getDifferenceCompteur(c);
+                StockReservoir s = new StockReservoir(-78, this.getDateTime(), new_qte, this.getPompe().getReservoir());
                 s.insert(c);
             }
             c.commit();
