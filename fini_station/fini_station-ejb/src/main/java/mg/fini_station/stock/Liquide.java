@@ -12,13 +12,23 @@ public class Liquide {
     private String nomLiquide;
     private double prixUnitaireAchat;
     private double prixUnitaireVente;
+    private String idCentrale;
+
+    public String getIdCentrale() {
+        return idCentrale;
+    }
+
+    public void setIdCentrale(String idCentrale) {
+        this.idCentrale = idCentrale;
+    }
 
     // Constructors
-    public Liquide(int idLiquide, String nomLiquide, double prixUnitaireAchat, double prixUnitaireVente) {
+    public Liquide(int idLiquide, String nomLiquide, double prixUnitaireAchat, double prixUnitaireVente,String idCentrale) {
         setIdLiquide(idLiquide);
         setNomLiquide(nomLiquide);
         setPrixUnitaireAchat(prixUnitaireAchat);
         setPrixUnitaireVente(prixUnitaireVente);
+        setIdCentrale(idCentrale);
     }
 
     public Liquide() {
@@ -66,10 +76,11 @@ public class Liquide {
         try {
             DbConn db = new DbConn();
             c = db.getConnection();
-            s = c.prepareStatement("INSERT INTO " + this.table_name + " (nom_liquide, prixUnitaireAchat, prixUnitaireVente) VALUES (?,?,?)");
+            s = c.prepareStatement("INSERT INTO " + this.table_name + " (nom_liquide, prixUnitaireAchat, prixUnitaireVente,id_centrale) VALUES (?,?,?,?)");
             s.setString(1, this.getNomLiquide());
             s.setDouble(2, this.getPrixUnitaireAchat());
             s.setDouble(3, this.getPrixUnitaireVente());
+            s.setString(4,this.getIdCentrale());
             s.executeUpdate();
         } catch (Exception e) {
             throw e;
@@ -96,6 +107,7 @@ public class Liquide {
                 l.setNomLiquide(rs.getString("nom_liquide"));
                 l.setPrixUnitaireAchat(rs.getDouble("prixUnitaireAchat"));
                 l.setPrixUnitaireVente(rs.getDouble("prixUnitaireVente"));
+                l.setIdCentrale(rs.getString("id_centrale"));
                 res.add(l);
             }
             return res;
@@ -126,6 +138,8 @@ public class Liquide {
                 l.setNomLiquide(rs.getString("nom_liquide"));
                 l.setPrixUnitaireAchat(rs.getDouble("prixUnitaireAchat"));
                 l.setPrixUnitaireVente(rs.getDouble("prixUnitaireVente"));
+                l.setIdCentrale(rs.getString("id_centrale"));
+
             }
             return l;
         } catch (Exception e) {
@@ -144,11 +158,12 @@ public class Liquide {
         try {
             DbConn db = new DbConn();
             c = db.getConnection();
-            s = c.prepareStatement("UPDATE " + this.table_name + " SET nom_liquide = ?, prixUnitaireAchat = ?, prixUnitaireVente = ? WHERE id_liquide = ?");
+            s = c.prepareStatement("UPDATE " + this.table_name + " SET nom_liquide = ?, prixUnitaireAchat = ?, prixUnitaireVente = ?,id_centrale=? WHERE id_liquide = ?");
             s.setString(1, this.getNomLiquide());
             s.setDouble(2, this.getPrixUnitaireAchat());
             s.setDouble(3, this.getPrixUnitaireVente());
             s.setInt(4, this.getIdLiquide());
+            s.setString(5,getIdCentrale());
             s.executeUpdate();
         } catch (Exception e) {
             throw e;

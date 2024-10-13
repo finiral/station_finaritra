@@ -33,10 +33,7 @@
                         <a class="nav-link" href="./reservoir">Achat Liquide Reservoir</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="./benefices">Benefice</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="">Prevision</a>
+                        <a class="nav-link" href="./prevision">Prevision</a>
                     </li>
                 </ul>
             </div>

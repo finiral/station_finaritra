@@ -41,7 +41,8 @@ public class EncaissementServlet extends HttpServlet {
             String dt_time = req.getParameter("dt_time");
             double montant = Double.parseDouble(req.getParameter("montant"));
             Prelevement p = new Prelevement().getById(id_prelevement);
-            new Encaissement(-89, montant, p, dt_time).insert();
+            Encaissement e=new Encaissement(-89, montant, p, dt_time);
+            e.encaissement();
             req.setAttribute("etat","Encaissement reussi !");
             prepDispatch(req, resp);
 

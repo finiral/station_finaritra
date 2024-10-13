@@ -1,6 +1,7 @@
 package mg.fini_station.mvt;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -22,6 +23,24 @@ public class Encaissement {
     private Prelevement prelevement;
     private double montant;
     private Timestamp dt; // Utilisation de Timestamp
+    private String idVente;
+    private String idVenteDetail;
+
+    public String getIdVente() {
+        return idVente;
+    }
+
+    public void setIdVente(String idVente) {
+        this.idVente = idVente;
+    }
+
+    public String getIdVenteDetail() {
+        return idVenteDetail;
+    }
+
+    public void setIdVenteDetail(String idVenteDetail) {
+        this.idVenteDetail = idVenteDetail;
+    }
 
     // Constructors
     public Encaissement(int idEncaissement, double montant, Prelevement p, String dt) {
@@ -92,10 +111,12 @@ public class Encaissement {
         PreparedStatement s = null;
         try {
             s = c.prepareStatement("INSERT INTO " + this.table_name
-                    + " (montant_encaissement, dateheure_encaissement, id_prelevement) VALUES (?, ?, ?)");
+                    + " (montant_encaissement, dateheure_encaissement, id_prelevement,id_vente,id_ventedetail) VALUES (?, ?, ?,?,?)");
             s.setDouble(1, this.getMontant());
             s.setTimestamp(2, this.getDt());
             s.setInt(3, this.getPrelevement().getIdPrelevement()); // Set Prelevement ID
+            s.setString(4, getIdVente());
+            s.setString(5, getIdVenteDetail());
             s.executeUpdate();
         } catch (Exception e) {
             throw e;
@@ -121,6 +142,8 @@ public class Encaissement {
                 encaissement.setIdEncaissement(rs.getInt("id_encaissement"));
                 encaissement.setMontant(rs.getDouble("montant_encaissement"));
                 encaissement.setDt(rs.getTimestamp("dateheure_encaissement"));
+                encaissement.setIdVente(rs.getString("id_vente"));
+                encaissement.setIdVenteDetail(rs.getString("id_ventedetail"));
 
                 // Retrieve Prelevement object
                 Prelevement prelevement = new Prelevement();
@@ -159,6 +182,8 @@ public class Encaissement {
                 encaissement.setIdEncaissement(rs.getInt("id_encaissement"));
                 encaissement.setMontant(rs.getDouble("montant_encaissement"));
                 encaissement.setDt(rs.getTimestamp("dateheure_encaissement"));
+                encaissement.setIdVente(rs.getString("id_vente"));
+                encaissement.setIdVenteDetail(rs.getString("id_ventedetail"));
 
                 // Retrieve Prelevement object
                 Prelevement prelevement = new Prelevement();
@@ -222,57 +247,101 @@ public class Encaissement {
         }
     }
 
-    public double getDifferencePrelevementEtEncaisser() throws Exception{
-        return this.getPrelevement().getDifferenceCompteurVola()-this.getMontant();
+    public double getDifferencePrelevementEtEncaisser() throws Exception {
+        return this.getPrelevement().getDifferenceCompteurVola() - this.getMontant();
     }
 
-    public void encaisser() throws Exception {
+    // public void encaisser() throws Exception {
+    // Connection c = null;
+    // try {
+    // DbConn db = new DbConn();
+    // c = db.getConnection();
+    // c.setAutoCommit(false);
+    // this.insert(c);
+    // // Ecriture vers centrale
+    // ComptaBeanClient compta = new ComptaBeanClient();
+    // // Création sous ecriture CAISSE
+    // ComptaSousEcriture cse = new ComptaSousEcriture();
+    // cse.setCompte("5300000000000");
+    // cse.setLibellePiece("Encaissement depuis pompe " +
+    // this.getPrelevement().getPompe().getNumeroPompe());
+    // cse.setRemarque("Encaissement depuis pompe " +
+    // this.getPrelevement().getPompe().getNumeroPompe());
+    // cse.setJournal("COMP000039");
+    // cse.setDebit(this.getMontant());
+    // cse.setCredit(0);
+    // cse.setDaty(Utilitaire.convertTimestampToDate(this.getDt()));
+    // compta.lookupComptaBeanLocal().ecrireSousEcriture(new
+    // OracleConn().getConnection(), cse);
+    // // Création sous ecriture 712
+    // ComptaSousEcriture four = new ComptaSousEcriture();
+    // four.setCompte("712000");
+    // four.setLibellePiece("Vente depuis pompe " +
+    // this.getPrelevement().getPompe().getNumeroPompe());
+    // four.setRemarque("Vente depuis pompe " +
+    // this.getPrelevement().getPompe().getNumeroPompe());
+    // four.setJournal("COMP000039");
+    // four.setDebit(this.getPrelevement().getDifferenceCompteurVola(c)-this.getMontant());
+    // four.setCredit(this.getPrelevement().getDifferenceCompteurVola(c));
+    // four.setDaty(Utilitaire.convertTimestampToDate(this.getDt()));
+    // compta.lookupComptaBeanLocal().ecrireSousEcriture(new
+    // OracleConn().getConnection(), four);
+    // // Creditation client divers (RAHA TSISI AVOIR)
+    // ComptaSousEcriture client = new ComptaSousEcriture();
+    // client.setCompte("4110000000000");
+    // client.setLibellePiece("Avoir " +
+    // this.getPrelevement().getPompe().getNumeroPompe());
+    // client.setRemarque("Avoir " +
+    // this.getPrelevement().getPompe().getNumeroPompe());
+    // client.setJournal("COMP000039");
+    // client.setDebit(0);
+    // client.setCredit(this.getMontant());
+    // client.setDaty(Utilitaire.convertTimestampToDate(this.getDt()));
+    // compta.lookupComptaBeanLocal().ecrireSousEcriture(new
+    // OracleConn().getConnection(), client);
+    // c.commit();
+    // } catch (Exception e) {
+    // c.rollback();
+    // throw e;
+    // } finally {
+    // if (c != null)
+    // c.close();
+    // }
+    // }
+
+    public void encaissement() throws Exception {
         Connection c = null;
         try {
+            /// CENTRALE
+            ComptaBeanClient compta = new ComptaBeanClient();
+            String idproduit = this.getPrelevement().getPompe().getReservoir().getTypeLiquide().getIdCentrale();
+            String designation = "" + this.getPrelevement().getPompe().getNumeroPompe();
+            Date dt = Utilitaire.convertTimestampToDate(this.getDt());
+            double montantCompteur = this.getPrelevement().getDifferenceCompteurVola();
+            String[] ids=compta.lookupComptaBeanLocal().encaissement(designation, dt, this.getMontant(), montantCompteur, idproduit);
+
+            /// INSERTION ENCAISSEMENT LOCAL
             DbConn db = new DbConn();
             c = db.getConnection();
             c.setAutoCommit(false);
+            this.setIdVente(ids[0]);
+            this.setIdVenteDetail(ids[1]);
             this.insert(c);
-            // Ecriture vers centrale
-            ComptaBeanClient compta = new ComptaBeanClient();
-            // Création sous ecriture CAISSE
-            ComptaSousEcriture cse = new ComptaSousEcriture();
-            cse.setCompte("5300000000000");
-            cse.setLibellePiece("Encaissement depuis " + this.getPrelevement().getPompe().getNumeroPompe());
-            cse.setRemarque("Encaissement depuis " + this.getPrelevement().getPompe().getNumeroPompe());
-            cse.setJournal("COMP000039");
-            cse.setDebit(this.getMontant());
-            cse.setCredit(0);
-            cse.setDaty(Utilitaire.convertTimestampToDate(this.getDt()));
-            compta.lookupComptaBeanLocal().ecrireSousEcriture(new OracleConn().getConnection(), cse);
-            // Création sous ecriture 712
-            ComptaSousEcriture four = new ComptaSousEcriture();
-            four.setCompte("712000");
-            four.setLibellePiece("Vente depuis " + this.getPrelevement().getPompe().getNumeroPompe());
-            four.setRemarque("Vente depuis " + this.getPrelevement().getPompe().getNumeroPompe());
-            four.setJournal("COMP000039");
-            four.setDebit(this.getPrelevement().getDifferenceCompteurVola(c)-this.getMontant());
-            four.setCredit(this.getPrelevement().getDifferenceCompteurVola(c));
-            four.setDaty(Utilitaire.convertTimestampToDate(this.getDt()));
-            compta.lookupComptaBeanLocal().ecrireSousEcriture(new OracleConn().getConnection(), four);
-            // Creditation client divers (RAHA TSISI AVOIR)
-            ComptaSousEcriture client = new ComptaSousEcriture();
-            client.setCompte("4110000000000");
-            client.setLibellePiece("Avoir " + this.getPrelevement().getPompe().getNumeroPompe());
-            client.setRemarque("Avoir " + this.getPrelevement().getPompe().getNumeroPompe());
-            client.setJournal("COMP000039");
-            client.setDebit(0);
-            client.setCredit(this.getMontant());
-            client.setDaty(Utilitaire.convertTimestampToDate(this.getDt()));
-            compta.lookupComptaBeanLocal().ecrireSousEcriture(new OracleConn().getConnection(), client);
             c.commit();
         } catch (Exception e) {
             c.rollback();
-            throw e;
+            e.printStackTrace();
         } finally {
-            if (c != null)
-                c.close();
+            c.close();
         }
+    }
 
+    public void avoir(String id_client,Date dt_time,double montant) throws Exception {
+            /// CENTRALE
+            ComptaBeanClient compta = new ComptaBeanClient();
+            String idvente=this.getIdVente();
+            String idventedetail=this.getIdVenteDetail();
+            compta.lookupComptaBeanLocal().makeAvoir(id_client, idvente,idventedetail, dt_time, montant);
+            
     }
 }
