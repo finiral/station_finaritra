@@ -25,6 +25,24 @@ public class Encaissement {
     private Timestamp dt; // Utilisation de Timestamp
     private String idVente;
     private String idVenteDetail;
+    private double avoir;
+    private double avoirPaie;
+
+    public double getAvoirPaie() {
+        return avoirPaie;
+    }
+
+    public void setAvoirPaie(double avoirPaie) {
+        this.avoirPaie = avoirPaie;
+    }
+
+    public double getAvoir() {
+        return avoir;
+    }
+
+    public void setAvoir(double avoir) {
+        this.avoir = avoir;
+    }
 
     public String getIdVente() {
         return idVente;
@@ -111,12 +129,14 @@ public class Encaissement {
         PreparedStatement s = null;
         try {
             s = c.prepareStatement("INSERT INTO " + this.table_name
-                    + " (montant_encaissement, dateheure_encaissement, id_prelevement,id_vente,id_ventedetail) VALUES (?, ?, ?,?,?)");
+                    + " (montant_encaissement, dateheure_encaissement, id_prelevement,id_vente,id_ventedetail,avoir,avoir_paie) VALUES (?, ?, ?,?,?,?,?)");
             s.setDouble(1, this.getMontant());
             s.setTimestamp(2, this.getDt());
             s.setInt(3, this.getPrelevement().getIdPrelevement()); // Set Prelevement ID
             s.setString(4, getIdVente());
             s.setString(5, getIdVenteDetail());
+            s.setDouble(6, getAvoir());
+            s.setDouble(7,0);
             s.executeUpdate();
         } catch (Exception e) {
             throw e;
@@ -144,6 +164,8 @@ public class Encaissement {
                 encaissement.setDt(rs.getTimestamp("dateheure_encaissement"));
                 encaissement.setIdVente(rs.getString("id_vente"));
                 encaissement.setIdVenteDetail(rs.getString("id_ventedetail"));
+                encaissement.setAvoir(rs.getDouble("avoir"));
+                encaissement.setAvoirPaie(rs.getDouble("avoir_paie"));
 
                 // Retrieve Prelevement object
                 Prelevement prelevement = new Prelevement();
@@ -184,6 +206,8 @@ public class Encaissement {
                 encaissement.setDt(rs.getTimestamp("dateheure_encaissement"));
                 encaissement.setIdVente(rs.getString("id_vente"));
                 encaissement.setIdVenteDetail(rs.getString("id_ventedetail"));
+                encaissement.setAvoir(rs.getDouble("avoir"));
+                encaissement.setAvoirPaie(rs.getDouble("avoir_paie"));
 
                 // Retrieve Prelevement object
                 Prelevement prelevement = new Prelevement();
@@ -211,11 +235,35 @@ public class Encaissement {
             DbConn db = new DbConn();
             c = db.getConnection();
             s = c.prepareStatement("UPDATE " + this.table_name
-                    + " SET montant_encaissement = ?, dateheure_encaissement = ?, id_prelevement = ? WHERE id_encaissement = ?");
+                    + " SET montant_encaissement = ?, dateheure_encaissement = ?, id_prelevement = ?,id_vente=?,id_ventedetail=?,avoir=?,avoir_paie=? WHERE id_encaissement = ?");
             s.setDouble(1, this.getMontant());
             s.setTimestamp(2, this.getDt());
             s.setInt(3, this.getPrelevement().getIdPrelevement()); // Update Prelevement ID
-            s.setInt(4, this.getIdEncaissement());
+            s.setString(4, this.getIdVente());
+            s.setString(5, this.getIdVenteDetail());
+            s.setDouble(6, this.getAvoir());
+            s.setDouble(7, this.getAvoirPaie());
+            s.executeUpdate();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (s != null)
+                s.close();
+            if (c != null)
+                c.close();
+        }
+    }
+
+    public void updateAvoirPaie() throws Exception {
+        Connection c = null;
+        PreparedStatement s = null;
+        try {
+            DbConn db = new DbConn();
+            c = db.getConnection();
+            s = c.prepareStatement("UPDATE " + this.table_name
+                    + " SET avoir_paie=? WHERE id_encaissement = ?");
+            s.setDouble(1, this.getAvoirPaie());
+            s.setInt(2, this.getIdEncaissement());
             s.executeUpdate();
         } catch (Exception e) {
             throw e;
@@ -318,7 +366,8 @@ public class Encaissement {
             String designation = "" + this.getPrelevement().getPompe().getNumeroPompe();
             Date dt = Utilitaire.convertTimestampToDate(this.getDt());
             double montantCompteur = this.getPrelevement().getDifferenceCompteurVola();
-            String[] ids=compta.lookupComptaBeanLocal().encaissement(designation, dt, this.getMontant(), montantCompteur, idproduit);
+            String[] ids = compta.lookupComptaBeanLocal().encaissement(designation, dt, this.getMontant(),
+                    montantCompteur, idproduit);
 
             /// INSERTION ENCAISSEMENT LOCAL
             DbConn db = new DbConn();
@@ -336,12 +385,24 @@ public class Encaissement {
         }
     }
 
-    public void avoir(String id_client,Date dt_time,double montant) throws Exception {
-            /// CENTRALE
-            ComptaBeanClient compta = new ComptaBeanClient();
-            String idvente=this.getIdVente();
-            String idventedetail=this.getIdVenteDetail();
-            compta.lookupComptaBeanLocal().makeAvoir(id_client, idvente,idventedetail, dt_time, montant);
-            
+    public void avoir(String id_client, Date dt_time, double montant) throws Exception {
+        /// CENTRALE
+        ComptaBeanClient compta = new ComptaBeanClient();
+        String idvente = this.getIdVente();
+        String idventedetail = this.getIdVenteDetail();
+
+        /// VERIFICATION
+        double total_avoir = this.getAvoirPaie() + montant;
+        if (total_avoir > this.getAvoir()) {
+            throw new Exception("miohatra ny avoirnao");
+        } else {
+
+            Encaissement e = new Encaissement();
+            e.setIdEncaissement(this.getIdEncaissement());
+            e.setAvoirPaie(this.getAvoirPaie() + montant);
+            e.updateAvoirPaie();
+            System.out.println("VOA UPDATE NY AVOIR "+e.getAvoirPaie());
+        }
+        compta.lookupComptaBeanLocal().makeAvoir(id_client, idvente, idventedetail, dt_time, montant);
     }
 }

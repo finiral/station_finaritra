@@ -74,6 +74,8 @@ CREATE TABLE Encaissement(
    montant_encaissement NUMERIC(15,2)   NOT NULL,
    id_vente VARCHAR(50) ,
    id_venteDetail VARCHAR(50) ,
+   avoir NUMERIC(15,2)  ,
+   avoir_paie NUMERIC(15,2)  ,
    id_prelevement INTEGER NOT NULL,
    PRIMARY KEY(id_encaissement),
    UNIQUE(id_prelevement),

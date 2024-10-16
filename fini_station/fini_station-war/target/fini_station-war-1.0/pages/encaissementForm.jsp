@@ -51,6 +51,8 @@
                 <th>Montant</th>
                 <th>Montant censer encaisser</th>
                 <th>Date</th>
+                <th>Montant avoir</th>
+                <th>Montant avoir payer</th>
                 <th>Plus</th>
             </tr>
         </thead>
@@ -63,6 +65,8 @@
                 <td><%=p.getMontant()%></td>
                 <td><%=p.getPrelevement().getDifferenceCompteurVola()%></td>
                 <td><%=p.getDt()%></td>
+                <td><%=p.getAvoir()%></td>
+                <td><%=p.getAvoirPaie()%></td>
                 <td><a href="detailEncaissement?id=<%=p.getIdEncaissement()%>">Details</a></td>
             </tr>
             <% }%>

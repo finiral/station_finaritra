@@ -1,6 +1,6 @@
 <%@page import="mg.fini_station.pompes.Prelevement"%>
-<%@page import="mg.fini_station.mvt.Encaissement"%>
 <%@page import="java.util.List"%>
+<%@ page import="mg.fini_station.mvt.Encaissement" %>
 <%@ include file="header.jsp" %>
 <%
     // Obtenez la liste des pr�l�vements depuis l'attribut de la requ�te
@@ -51,6 +51,8 @@
                 <th>Montant</th>
                 <th>Montant censer encaisser</th>
                 <th>Date</th>
+                <th>Montant avoir</th>
+                <th>Montant avoir payer</th>
                 <th>Plus</th>
             </tr>
         </thead>
@@ -63,6 +65,8 @@
                 <td><%=p.getMontant()%></td>
                 <td><%=p.getPrelevement().getDifferenceCompteurVola()%></td>
                 <td><%=p.getDt()%></td>
+                <td><%=p.getAvoir()%></td>
+                <td><%=p.getAvoirPaie()%></td>
                 <td><a href="detailEncaissement?id=<%=p.getIdEncaissement()%>">Details</a></td>
             </tr>
             <% }%>

@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 
 public class Utilitaire {
@@ -96,4 +97,16 @@ public class Utilitaire {
         // Retourner une nouvelle java.sql.Date avec la date mise à jour
         return new Date(cal.getTimeInMillis());
     }
+
+     public static String getLastDayOfMonth(String monthString) {
+        // Crée un LocalDate au premier jour du mois fourni
+        LocalDate firstDayOfMonth = LocalDate.parse(monthString + "-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        
+        // Trouve le dernier jour du mois
+        LocalDate lastDayOfMonth = firstDayOfMonth.with(TemporalAdjusters.lastDayOfMonth());
+        
+        // Formate la date en string au format yyyy-MM-dd
+        return lastDayOfMonth.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
 }

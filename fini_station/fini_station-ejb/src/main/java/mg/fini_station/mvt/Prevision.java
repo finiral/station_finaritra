@@ -71,8 +71,34 @@ public class Prevision {
         List<Encaissement> ls=new Encaissement().getAll();
         List<Prevision> res=new ArrayList<Prevision>();
         for (Encaissement encaissement : ls) {
-            String[] datas=compta.lookupComptaBeanLocal().getPrevData(encaissement.getIdVente());
-            res.add(new Prevision(datas[0],datas[1],datas[2],datas[3],datas[4]));
+            String[][] datas=compta.lookupComptaBeanLocal().getPrevData(encaissement.getIdVente());
+            if(datas!=null){
+                for(String [] d:datas){
+                    if(d!=null){
+                        res.add(new Prevision(d[0],d[1],d[2],d[3],d[4]));
+                    }
+                }
+
+            }
+        }
+        return res;
+    }
+
+    public List<Prevision> getAllDt(String dt) throws Exception {
+        ComptaBeanClient compta = new ComptaBeanClient();
+        List<Encaissement> ls=new Encaissement().getAll();
+        List<Prevision> res=new ArrayList<Prevision>();
+        for (Encaissement encaissement : ls) {
+            System.out.println(dt);
+            String[][] datas=compta.lookupComptaBeanLocal().getPrevData(encaissement.getIdVente(),dt);
+            if(datas!=null){
+                for(String [] d:datas){
+                    if(d!=null){
+                        res.add(new Prevision(d[0],d[1],d[2],d[3],d[4]));
+                    }
+                }
+
+            }
         }
         return res;
     }

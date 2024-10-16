@@ -11,15 +11,17 @@
         <thead>
             <tr>
                 <th>Montant encaissement</th>
-                <th>Montant censer etre encaisser (prelevement)</th>
+                <th>Montant avoir</th>
+                <th>Montant avoir payé</th>
                 <th>Difference</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td><%=e.getMontant()%></td>
-                <td><%=e.getPrelevement().getDifferenceCompteurVola()%></td>
-                <td><%=e.getDifferencePrelevementEtEncaisser()%></td>
+                <td><%=e.getAvoir()%></td>
+                <td><%=e.getAvoirPaie()%></td>
+                <td><%=e.getAvoir()-e.getAvoirPaie()%></td>
             </tr>
         </tbody>
     </table>

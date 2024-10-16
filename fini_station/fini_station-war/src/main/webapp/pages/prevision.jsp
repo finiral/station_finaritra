@@ -8,7 +8,7 @@ List<Prevision> previsions=(List<Prevision>)request.getAttribute("previsions");
 
 %>
 <form action="prevision" method="POST">
-    <p>Date <input type="month"> </p>
+    <p>Date <input type="month" name="dt"> </p>
     <input type="submit" value="VAlider">
 </form>
 <h1>TABLEAU DE PREVISION</h1>

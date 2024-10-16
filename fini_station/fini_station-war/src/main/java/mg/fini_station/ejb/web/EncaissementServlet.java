@@ -10,11 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.itextpdf.text.List;
-
 import mg.fini_station.mvt.Encaissement;
-import mg.fini_station.pompes.Pompe;
-import mg.fini_station.pompes.Pompiste;
 import mg.fini_station.pompes.Prelevement;
 
 @WebServlet("/encaissement")
@@ -42,6 +38,8 @@ public class EncaissementServlet extends HttpServlet {
             double montant = Double.parseDouble(req.getParameter("montant"));
             Prelevement p = new Prelevement().getById(id_prelevement);
             Encaissement e=new Encaissement(-89, montant, p, dt_time);
+            double avoir =e.getPrelevement().getDifferenceCompteurVola()-e.getMontant();
+            e.setAvoir(avoir);
             e.encaissement();
             req.setAttribute("etat","Encaissement reussi !");
             prepDispatch(req, resp);
