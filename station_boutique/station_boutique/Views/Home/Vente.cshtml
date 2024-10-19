@@ -10,34 +10,35 @@ Layout = "_Layout";
 <div class="card">
     <div class="card-body">
         <div class="d-flex justify-content-center">
-            <form id="venteForm">
+            <form id="venteForm" method="post" action="SendVente">
                 <div id="venteInputs">
                     <div class="row mb-3">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label for="produitSelect" class="form-label">Produit</label>
                             <select class="form-select form-select-lg produitSelect" name="produitSelect">
                                 @foreach (var produit in Model)
                                 {
-                                <option value="@produit.Id" data-price="@produit.PuVente">@produit.Val</option>
+                                    <option value="@produit.Id" data-price="@produit.PuVente">@produit.Val</option>
                                 }
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label for="qteInput" class="form-label">Quantité</label>
                             <input type="number" class="form-control form-control-lg qteInput" name="qteInput" min="1" />
                         </div>
-                        <div class="col-md-3">
-                            <label for="dateInput" class="form-label">Date</label>
-                            <input type="date" class="form-control form-control-lg" name="dateInput" />
-                        </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label class="form-label">Prix Unitaire</label>
-                            <input type="text" class="form-control form-control-lg unitPrice" readonly />
+                            <input type="text" class="form-control form-control-lg unitPrice" name="unitPrice" readonly />
                         </div>
                         <div class="col-md-1 d-flex align-items-end">
                             <button type="button" class="btn btn-primary btn-lg" id="addLineBtn">+</button>
                         </div>
                     </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="dateInput" class="form-label">Date</label>
+                    <input type="date" class="form-control form-control-lg" name="dateInput" />
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-12">
@@ -70,7 +71,7 @@ Layout = "_Layout";
         var newLine = document.createElement('div');
         newLine.className = 'row mb-3';
         newLine.innerHTML = `
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label for="produitSelect" class="form-label">Produit</label>
                 <select class="form-select form-select-lg produitSelect" name="produitSelect">
                     @foreach (var produit in Model)
@@ -79,17 +80,13 @@ Layout = "_Layout";
         }
                 </select>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <label for="qteInput" class="form-label">Quantité</label>
                 <input type="number" class="form-control form-control-lg qteInput" name="qteInput" min="1" />
             </div>
-            <div class="col-md-3">
-                <label for="dateInput" class="form-label">Date</label>
-                <input type="date" class="form-control form-control-lg" name="dateInput" />
-            </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label class="form-label">Prix Unitaire</label>
-                <input type="text" class="form-control form-control-lg unitPrice" readonly />
+                <input type="text" class="form-control form-control-lg unitPrice" name="unitPrice" readonly />
             </div>
             <div class="col-md-1 d-flex align-items-end">
                 <button type="button" class="btn btn-danger btn-lg removeLineBtn">-</button>

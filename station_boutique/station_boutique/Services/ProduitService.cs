@@ -1,5 +1,6 @@
 ﻿// File: Services/ProduitService.cs
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using station_boutique.Models;
@@ -22,5 +23,21 @@ namespace station_boutique.Services
             var jsonResponse = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<List<Produit>>(jsonResponse);
         }
+        
+        public async Task<Boolean> SendVentes(Vente vente)
+        {
+            var jsonContent = new StringContent(JsonSerializer.Serialize(vente), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(api_url + "/ventes", jsonContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+
+            // Handle error response
+            var errorResponse = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException($"Server error: {response.StatusCode}, {errorResponse}");
+        }
+        
     }
 }
