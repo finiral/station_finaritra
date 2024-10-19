@@ -1,12 +1,14 @@
 mg\fini_station\ejb\web\DetailEncaissementServlet.class
 mg\fini_station\ejb\web\rest_api\repos\ProduitRepo.class
-mg\fini_station\ejb\web\rest_api\VenteService.class
-mg\fini_station\ejb\web\EncaissementServlet.class
 mg\fini_station\ejb\web\rest_api\FiniREST.class
+mg\fini_station\ejb\web\rest_api\StockService.class
 mg\fini_station\ejb\web\ReservoirServlet.class
 mg\fini_station\ejb\web\FormPrelevementServlet.class
+mg\fini_station\ejb\web\PrevisionServlet.class
+mg\fini_station\ejb\web\rest_api\VenteService.class
+mg\fini_station\ejb\web\EncaissementServlet.class
+mg\fini_station\ejb\web\rest_api\repos\StockRepo.class
 mg\fini_station\ejb\web\PrelevementCuveServlet.class
 mg\fini_station\ejb\web\rest_api\ProduitService.class
 mg\fini_station\ejb\web\StockServlet.class
-mg\fini_station\ejb\web\PrevisionServlet.class
 mg\fini_station\ejb\web\TahinaServlet.class

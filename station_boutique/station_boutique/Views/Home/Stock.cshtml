@@ -1,0 +1,113 @@
+﻿@{
+ViewData["Title"] = "Stocks";
+Layout = "_Layout";
+}
+
+@{
+var products = ViewBag.Products as List<station_boutique.Models.Produit>;
+var stocks = ViewBag.Stocks as List<station_boutique.Models.EtatStock>;
+}
+
+<h1>Ajouter stock</h1>
+
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-center">
+            <form id="stockForm" method="post" action="SendStock">
+                <div id="stockInputs">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="produitSelect" class="form-label">Produit</label>
+                            <select class="form-select form-select-lg produitSelect" name="produitSelect">
+                                @foreach (var produit in products)
+                                {
+                                <option value="@produit.Id">@produit.Val</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="qteInput" class="form-label">Quantité</label>
+                            <input type="number" class="form-control form-control-lg qteInput" name="qteInput" min="1" />
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="button" class="btn btn-primary btn-lg" id="addLineBtn">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="dateInput" class="form-label">Date</label>
+                    <input type="date" class="form-control form-control-lg" name="dateInput" />
+                </div>
+                <br/>
+                <button type="submit" class="btn btn-success btn-lg">Ajouter les stocks</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<h2>Etat Stock</h2>
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Id Produit Lib</th>
+            <th>Id Type Produit Lib</th>
+            <th>Id Magasin Lib</th>
+            <th>Quantité</th>
+            <th>Entrée</th>
+            <th>Sortie</th>
+            <th>Reste</th>
+            <th>PU Vente</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var stock in stocks)
+        {
+        <tr>
+            <td>@stock.Id</td>
+            <td>@stock.IdProduitLib</td>
+            <td>@stock.IdTypeProduitLib</td>
+            <td>@stock.IdMagasinLib</td>
+            <td>@stock.Quantite</td>
+            <td>@stock.Entree</td>
+            <td>@stock.Sortie</td>
+            <td>@stock.Reste</td>
+            <td>@stock.PuVente</td>
+        </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.getElementById('addLineBtn').addEventListener('click', function () {
+        var stockInputs = document.getElementById('stockInputs');
+        var newLine = document.createElement('div');
+        newLine.className = 'row mb-3';
+        newLine.innerHTML = `
+            <div class="col-md-6">
+                <label for="produitSelect" class="form-label">Produit</label>
+                <select class="form-select form-select-lg produitSelect" name="produitSelect">
+                    @foreach (var produit in products)
+        {
+        <option value="@produit.Id">@produit.Val</option>
+        }
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label for="qteInput" class="form-label">Quantité</label>
+                <input type="number" class="form-control form-control-lg qteInput" name="qteInput" min="1" />
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="button" class="btn btn-danger btn-lg removeLineBtn">-</button>
+            </div>
+        `;
+        stockInputs.appendChild(newLine);
+
+        newLine.querySelector('.removeLineBtn').addEventListener('click', function () {
+            stockInputs.removeChild(newLine);
+        });
+    });
+</script>

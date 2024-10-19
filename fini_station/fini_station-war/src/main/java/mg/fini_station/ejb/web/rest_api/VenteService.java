@@ -2,6 +2,8 @@ package mg.fini_station.ejb.web.rest_api;
 
 import annexe.Produit;
 import mg.fini_station.ejb.web.rest_api.repos.ProduitRepo;
+import stock.MvtStock;
+import stock.MvtStockFille;
 import user.UserEJBClient;
 import utilitaire.UtilDB;
 import vente.Vente;
@@ -28,6 +30,7 @@ public class VenteService {
 	String CAISSE = "CAI000258";
 	String TYPE_ENCAISSEMENT = "TE001";
 	String DEVISE = "AR";
+	String TYPEMVTSTOCK="TPMVST000022";
 	double TAUX = 1.0;
 
 	@POST
@@ -37,9 +40,19 @@ public class VenteService {
 		try {
 			c = new UtilDB().GetConn();
 			c.setAutoCommit(false);
+			
+			///MOUVEMENT STOCK
+			MvtStock mvtStock = new MvtStock();
+			mvtStock.setIdMagasin(v.getIdMagasin());
+			mvtStock.setDaty(v.getDaty());
+			mvtStock.setDesignation("STOCK SORTIEEE");
+			mvtStock.setIdTypeMvStock(TYPEMVTSTOCK);
+			mvtStock.setIdVente(v.getId());
+			mvtStock.createObject(USER, c);
+			///VENTE
 			v.setIdClient("CLI000054");
 			v.setDesignation("PRODUCT SELLING ");
-			v.setIdMagasin(MAGASIN);
+			/* v.setIdMagasin(MAGASIN); */
 			v.setEstPrevu(1);
 			v.createObject(USER, c);
 			for (VenteDetails vd : v.getVenteDetails()) {
@@ -49,13 +62,24 @@ public class VenteService {
 				vd.setIdDevise(DEVISE);
 				vd.setCompte(COMPTE);
 				System.out.println(vd.getIdProduit());
-				vd.createObject(USER, c);
+				vd.insertToTable(c);
+				///STOCK FILLE
+				MvtStockFille stock = new MvtStockFille();
+				stock.setSortie(vd.getQte());
+				stock.setIdProduit(vd.getIdProduit());
+				stock.setEntree(0);
+				stock.setIdVenteDetail(vd.getId());
+				stock.setIdMvtStock(mvtStock.getId());
+				stock.insertToTable(c);
 			}
 			v.validerObject(USER, c);
+			mvtStock.validerObject(USER, c);
+
 			c.commit();
 			return Response.ok().build();
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			if (c != null)
 				c.rollback();
 			return Response.serverError().entity(e.getMessage()).build();

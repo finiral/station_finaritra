@@ -31,6 +31,7 @@ public class ProduitRepo {
     }
 
     public List<Produit> getAllProduitBoutique(Connection c) throws  Exception{
-        return this.getAllProduit("TP00001",c);
+        List<Produit> res=this.getAllProduit("TP00001",c);
+        return res;
     }
 }

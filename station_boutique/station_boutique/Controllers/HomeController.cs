@@ -27,13 +27,23 @@ public class HomeController : Controller
         return View(products);
     }
     
+    public async Task<IActionResult> Stock()
+    {
+        var products = await _produitService.GetProductsAsync();
+        var stocks = await _produitService.GetStocksAsync();
+
+        ViewBag.Products = products;
+        ViewBag.Stocks = stocks;
+
+        return View();
+    }
+    
     [HttpPost]
     public async Task<IActionResult> SendVente(List<string> produitSelect, List<double> unitPrice, List<int> qteInput, DateTime dateInput)
     {
         try
         {
             Vente vente = new Vente();
-            vente.IdMagasin = "JEANBAPTISTE";
             vente.Dt = dateInput;
             List<VenteDetails> ventesd = new List<VenteDetails>();
             for (int i = 0; i < produitSelect.Count; i++)
@@ -58,6 +68,31 @@ public class HomeController : Controller
 
         }
        
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> SendStock(List<string> produitSelect, List<int> qteInput, DateTime dateInput)
+    {
+        try
+        {
+            List<MvtStockFille> stocks = new List<MvtStockFille>();
+            for (int i = 0; i < produitSelect.Count; i++)
+            {
+                MvtStockFille stock = new MvtStockFille
+                {
+                    IdProduit = produitSelect[i],
+                    Entree = qteInput[i]
+                };
+                stocks.Add(stock);
+            }
+            await _produitService.SendStock(stocks,dateInput);
+            return RedirectToAction("Stock");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.ToString());
+            return RedirectToAction("Error", new { message = e.Message });
+        }
     }
 
     public IActionResult Privacy()

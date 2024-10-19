@@ -54,6 +54,7 @@ public class Vente
     
     public Vente()
     {
+        this.IdMagasin = "POMP001";
     }
     
     public Vente(DateTime dt, string idMagasin,List<VenteDetails> vd)
