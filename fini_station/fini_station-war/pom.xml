@@ -28,6 +28,13 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.10.0</version> <!-- or latest stable version -->
+        </dependency>
+
+
+        <dependency>
             <groupId>mg.fini_station</groupId>
             <artifactId>fini_station-ejb</artifactId>
             <version>1.0</version>

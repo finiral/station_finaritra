@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    Layout = "_Layout";
+}
+
+@model List<station_boutique.Models.Produit>
+<h1>Products</h1>
+<table class="table table-responsive table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Val</th>
+        <th>Description</th>
+        <th>Purchase Price</th>
+        <th>Sale Price</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var product in Model)
+    {
+    <tr>
+        <td>@product.Id</td>
+        <td>@product.Val</td>
+        <td>@product.Desce</td>
+        <td>@product.PuAchat</td>
+        <td>@product.PuVente</td>
+    </tr>
+    }
+    </tbody>
+</table>

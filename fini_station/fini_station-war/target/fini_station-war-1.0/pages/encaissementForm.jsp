@@ -1,6 +1,6 @@
 <%@page import="mg.fini_station.pompes.Prelevement"%>
-<%@page import="mg.fini_station.mvt.Encaissement"%>
 <%@page import="java.util.List"%>
+<%@ page import="mg.fini_station.mvt.Encaissement" %>
 <%@ include file="header.jsp" %>
 <%
     // Obtenez la liste des pr�l�vements depuis l'attribut de la requ�te

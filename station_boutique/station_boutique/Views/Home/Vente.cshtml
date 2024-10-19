@@ -1,0 +1,116 @@
+﻿@{
+ViewData["Title"] = "Ventes";
+Layout = "_Layout";
+}
+
+@model List<station_boutique.Models.Produit>
+
+<h1>Ventes</h1>
+
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-center">
+            <form id="venteForm">
+                <div id="venteInputs">
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label for="produitSelect" class="form-label">Produit</label>
+                            <select class="form-select form-select-lg produitSelect" name="produitSelect">
+                                @foreach (var produit in Model)
+                                {
+                                <option value="@produit.Id" data-price="@produit.PuVente">@produit.Val</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="qteInput" class="form-label">Quantité</label>
+                            <input type="number" class="form-control form-control-lg qteInput" name="qteInput" min="1" />
+                        </div>
+                        <div class="col-md-3">
+                            <label for="dateInput" class="form-label">Date</label>
+                            <input type="date" class="form-control form-control-lg" name="dateInput" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Prix Unitaire</label>
+                            <input type="text" class="form-control form-control-lg unitPrice" readonly />
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="button" class="btn btn-primary btn-lg" id="addLineBtn">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="form-label">Total Prix de Vente: </label>
+                        <span id="totalPrice">0</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success btn-lg">Confirmer les ventes</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateUnitPriceAndTotal() {
+        let totalPrice = 0;
+        document.querySelectorAll('#venteInputs .row').forEach(row => {
+            const select = row.querySelector('.produitSelect');
+            const quantity = row.querySelector('.qteInput').value;
+            const unitPrice = select.options[select.selectedIndex].getAttribute('data-price');
+            row.querySelector('.unitPrice').value = unitPrice;
+            totalPrice += unitPrice * quantity;
+        });
+        document.getElementById('totalPrice').innerText = totalPrice.toFixed(2);
+    }
+
+    document.getElementById('venteForm').addEventListener('change', updateUnitPriceAndTotal);
+    document.getElementById('addLineBtn').addEventListener('click', function () {
+        var venteInputs = document.getElementById('venteInputs');
+        var newLine = document.createElement('div');
+        newLine.className = 'row mb-3';
+        newLine.innerHTML = `
+            <div class="col-md-3">
+                <label for="produitSelect" class="form-label">Produit</label>
+                <select class="form-select form-select-lg produitSelect" name="produitSelect">
+                    @foreach (var produit in Model)
+        {
+        <option value="@produit.Id" data-price="@produit.PuVente">@produit.Val</option>
+        }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="qteInput" class="form-label">Quantité</label>
+                <input type="number" class="form-control form-control-lg qteInput" name="qteInput" min="1" />
+            </div>
+            <div class="col-md-3">
+                <label for="dateInput" class="form-label">Date</label>
+                <input type="date" class="form-control form-control-lg" name="dateInput" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Prix Unitaire</label>
+                <input type="text" class="form-control form-control-lg unitPrice" readonly />
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="button" class="btn btn-danger btn-lg removeLineBtn">-</button>
+            </div>
+        `;
+        venteInputs.appendChild(newLine);
+
+        newLine.querySelector('.removeLineBtn').addEventListener('click', function () {
+            venteInputs.removeChild(newLine);
+            updateUnitPriceAndTotal();
+        });
+
+        newLine.querySelector('.produitSelect').addEventListener('change', updateUnitPriceAndTotal);
+        newLine.querySelector('.qteInput').addEventListener('input', updateUnitPriceAndTotal);
+    });
+
+    document.querySelectorAll('.produitSelect').forEach(select => {
+        select.addEventListener('change', updateUnitPriceAndTotal);
+    });
+
+    document.querySelectorAll('.qteInput').forEach(input => {
+        input.addEventListener('input', updateUnitPriceAndTotal);
+    });
+</script>

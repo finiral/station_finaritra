@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\station_boutique.props" />
+</Project>
