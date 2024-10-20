@@ -1,6 +1,8 @@
 package mg.fini_station.ejb.web.rest_api;
 
 import annexe.Produit;
+import caisse.MvtCaisse;
+import caisse.ReportCaisse;
 import mg.fini_station.ejb.web.rest_api.repos.ProduitRepo;
 import stock.MvtStock;
 import stock.MvtStockFille;
@@ -27,7 +29,7 @@ public class VenteService {
 	String COMPTE = "712000";
 	String CATEGORIE = "CTG000103";
 	String MAGASIN = "POMP001";
-	String CAISSE = "CAI000258";
+	String CAISSE = "CAI000239";
 	String TYPE_ENCAISSEMENT = "TE001";
 	String DEVISE = "AR";
 	String TYPEMVTSTOCK="TPMVST000022";
@@ -72,7 +74,24 @@ public class VenteService {
 				stock.setIdVenteDetail(vd.getId());
 				stock.setIdMvtStock(mvtStock.getId());
 				stock.insertToTable(c);
+				///CAISSE
+				/* ReportCaisse rep=new ReportCaisse();
+				rep.setDaty(v.getDaty());
+				rep.setIdCaisse(CAISSE);
+				rep.createObject(USER, c);
+				rep.validerObject(USER, c); */
+				/* MvtCaisse caisse=new MvtCaisse();
+				caisse.setDesignation("CAISSE MOVEMENT VENTE");
+				caisse.setDaty(v.getDaty());
+				caisse.setIdDevise(DEVISE);
+				caisse.setIdCaisse(CAISSE);
+				caisse.setIdVenteDetail(vd.getId());
+				caisse.setCredit(vd.getPuVente()*vd.getQte());
+				caisse.setTaux(TAUX);
+				caisse.createObject(USER, c); */
+				/* caisse.validerObject(USER, c); */
 			}
+			v.genererEcritureEncaissement(USER, c);
 			v.validerObject(USER, c);
 			mvtStock.validerObject(USER, c);
 
