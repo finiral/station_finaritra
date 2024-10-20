@@ -63,6 +63,7 @@ public class VenteService {
 				vd.setCompte(COMPTE);
 				System.out.println(vd.getIdProduit());
 				vd.insertToTable(c);
+				vd.CheckEtatStock(c);
 				///STOCK FILLE
 				MvtStockFille stock = new MvtStockFille();
 				stock.setSortie(vd.getQte());
