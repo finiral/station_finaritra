@@ -23,8 +23,14 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Vente()
     {
+        var clients = await _produitService.GetClientsAsync();
+        var ventes = await _produitService.GetVentesAsync();
         var products = await _produitService.GetProductsAsync();
-        return View(products);
+        ViewBag.Products = products;
+        ViewBag.Clients = clients;
+        ViewBag.Ventes = ventes;
+        
+        return View();
     }
     
     public async Task<IActionResult> Stock()
@@ -39,12 +45,13 @@ public class HomeController : Controller
     }
     
     [HttpPost]
-    public async Task<IActionResult> SendVente(List<string> produitSelect, List<double> unitPrice, List<int> qteInput, DateTime dateInput)
+    public async Task<IActionResult> SendVente(String clientSelect,List<string> produitSelect, List<decimal> unitPrice, List<decimal> qteInput, DateTime dateInput,int isDirect)
     {
         try
         {
             Vente vente = new Vente();
             vente.Dt = dateInput;
+            vente.IdClient = clientSelect;
             List<VenteDetails> ventesd = new List<VenteDetails>();
             for (int i = 0; i < produitSelect.Count; i++)
             {
@@ -58,7 +65,7 @@ public class HomeController : Controller
                 ventesd.Add(detail);
             }
             vente.VenteDetails = ventesd;
-            await _produitService.SendVentes(vente);
+            await _produitService.SendVentes(vente,isDirect);
             return RedirectToAction("Vente");
         }
         catch (Exception e)
@@ -93,6 +100,47 @@ public class HomeController : Controller
             Console.WriteLine(e.ToString());
             return RedirectToAction("Error", new { message = e.Message });
         }
+    }
+    
+    public async Task<IActionResult> SendVenteDetails(List<String> IdVenteDetail,List<String> IdProduit,List<decimal> quantity)
+    {
+        try
+        {
+            List<VenteDetails> alefa = new List<VenteDetails>();
+            for (int i=0 ; i<IdVenteDetail.Count ; i++)
+            {
+                Console.WriteLine(IdVenteDetail[i]);
+                
+                VenteDetails venteDetails = new VenteDetails
+                {
+                    Id = IdVenteDetail[i],
+                    IdProduit = IdProduit[i],
+                    Qte = quantity[i]
+                };
+                alefa.Add(venteDetails);
+                
+            }
+            await _produitService.SendVentesDetails(alefa);
+            return RedirectToAction("Vente");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.ToString());
+            return RedirectToAction("Error", new { message = e.Message });
+        }
+    }
+    
+    
+    public async Task<IActionResult> Details(string id)
+    {
+        
+        var vente = await _produitService.GetVentesDetailByIdAsync(id);
+        if (vente == null)
+        {
+            return NotFound();
+        }
+
+        return View(vente);
     }
 
     public IActionResult Privacy()

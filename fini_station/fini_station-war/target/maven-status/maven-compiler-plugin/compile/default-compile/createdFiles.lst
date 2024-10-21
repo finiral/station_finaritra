@@ -5,6 +5,7 @@ mg\fini_station\ejb\web\rest_api\StockService.class
 mg\fini_station\ejb\web\ReservoirServlet.class
 mg\fini_station\ejb\web\FormPrelevementServlet.class
 mg\fini_station\ejb\web\PrevisionServlet.class
+mg\fini_station\ejb\web\rest_api\ClientService.class
 mg\fini_station\ejb\web\rest_api\VenteService.class
 mg\fini_station\ejb\web\EncaissementServlet.class
 mg\fini_station\ejb\web\rest_api\repos\StockRepo.class

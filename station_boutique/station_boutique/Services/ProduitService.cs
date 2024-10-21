@@ -25,6 +25,30 @@ namespace station_boutique.Services
             return JsonSerializer.Deserialize<List<Produit>>(jsonResponse);
         }
         
+        public async Task<List<Client>> GetClientsAsync()
+        {
+            var response = await _httpClient.GetAsync(api_url + "/clients");
+            response.EnsureSuccessStatusCode();
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<List<Client>>(jsonResponse);
+        }
+        
+        public async Task<List<Vente>> GetVentesAsync()
+        {
+            var response = await _httpClient.GetAsync(api_url + "/ventes");
+            response.EnsureSuccessStatusCode();
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<List<Vente>>(jsonResponse);
+        }
+        
+        public async Task<List<VenteDetails>> GetVentesDetailByIdAsync(String id)
+        {
+            var response = await _httpClient.GetAsync(api_url + "/ventes/details?idVente="+id);
+            response.EnsureSuccessStatusCode();
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<List<VenteDetails>>(jsonResponse);
+        }
+        
         public async Task<List<EtatStock>> GetStocksAsync()
         {
             var response = await _httpClient.GetAsync(api_url + "/stocks");
@@ -33,10 +57,25 @@ namespace station_boutique.Services
             return JsonSerializer.Deserialize<List<EtatStock>>(jsonResponse);
         }
         
-        public async Task<Boolean> SendVentes(Vente vente)
+        public async Task<Boolean> SendVentes(Vente vente,int isDirect)
         {
             var jsonContent = new StringContent(JsonSerializer.Serialize(vente), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync(api_url + "/ventes", jsonContent);
+            var response = await _httpClient.PostAsync(api_url + "/ventes?isDirect="+isDirect, jsonContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+
+            // Handle error response
+            var errorResponse = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException($"Server error: {response.StatusCode}, {errorResponse}");
+        }
+        
+        public async Task<Boolean> SendVentesDetails(List<VenteDetails> v)
+        {
+            var jsonContent = new StringContent(JsonSerializer.Serialize(v), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(api_url + "/ventes/details", jsonContent);
 
             if (response.IsSuccessStatusCode)
             {

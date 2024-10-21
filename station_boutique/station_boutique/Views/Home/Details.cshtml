@@ -1,0 +1,65 @@
+﻿@model List<VenteDetails>
+
+@{
+ViewData["Title"] = "Vente Details";
+Layout = "_Layout";
+}
+
+<h1>Vente Details</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h3>Vente Details</h3>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Prix Unitaire</th>
+                    <th>Total</th>
+                    <th>Nouveau quantite</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var detail in Model)
+                {
+                <tr>
+                    <td>@detail.IdProduit</td>
+                    <td>@detail.Qte</td>
+                    <td>@detail.PuVente</td>
+                    <td>@(detail.Qte * detail.PuVente)</td>
+                    <td>
+                        <form class="vente-detail-form">
+                            <input type="hidden" name="IdVenteDetail" value="@detail.Id" />
+                            <input type="hidden" name="IdProduit" value="@detail.IdProduit" />
+                            <input type="number" name="quantity" value="@detail.Qte" class="form-control" min="1" />
+                        </form>
+                    </td>
+                </tr>
+                }
+                </tbody>
+            </table>
+            <form id="mainForm" method="post" action="@Url.Action("SendVenteDetails", "Home")">
+                <button type="button" id="submitAll" class="btn btn-danger">Valider Tout</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('submitAll').addEventListener('click', function() {
+        var mainForm = document.getElementById('mainForm');
+        document.querySelectorAll('.vente-detail-form').forEach(function(form) {
+            var formData = new FormData(form);
+            formData.forEach(function(value, key) {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = value;
+                mainForm.appendChild(input);
+            });
+        });
+        mainForm.submit();
+    });
+</script>

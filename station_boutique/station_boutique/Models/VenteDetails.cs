@@ -4,6 +4,18 @@ namespace station_boutique.Models;
 
 public class VenteDetails
 {
+    [JsonPropertyName("id")]
+    public string Id
+    {
+        get => id;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentNullException(nameof(value), "Id cannot be null or empty.");
+            id = value;
+        }
+    }
+    
     [JsonPropertyName("idProduit")]
     public string IdProduit
     {
@@ -17,7 +29,7 @@ public class VenteDetails
     }
 
     [JsonPropertyName("puVente")]
-    public double PuVente
+    public decimal PuVente
     {
         get => puVente;
         set
@@ -29,7 +41,7 @@ public class VenteDetails
     }
 
     [JsonPropertyName("qte")]
-    public int Qte
+    public decimal Qte
     {
         get => qte;
         set
@@ -40,14 +52,15 @@ public class VenteDetails
         }
     }
 
+    private String id;
     private String idProduit;
-    private double puVente;
-    private int qte;
+    private decimal puVente;
+    private decimal qte;
     public VenteDetails()
     {
     }
     
-    public VenteDetails(string idProduit, double puVente, int qte)
+    public VenteDetails(string idProduit, decimal puVente, decimal qte)
     {
         this.IdProduit = idProduit;
         this.PuVente = puVente;

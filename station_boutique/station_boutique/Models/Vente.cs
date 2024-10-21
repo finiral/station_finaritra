@@ -29,27 +29,54 @@ public class Vente
         }
     }
     
+    [JsonPropertyName("id")]
+    public string Id
+    {
+        get => id;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentNullException(nameof(value), "Id cannot be null or empty.");
+            id = value;
+        }
+    }
+    
+    [JsonPropertyName("idClient")]
+    public string IdClient
+    {
+        get => idClient;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentNullException(nameof(value), "IdClient cannot be null or empty.");
+            idClient = value;
+        }
+    }
+    
     [JsonPropertyName("venteDetails")]
     public List<VenteDetails> VenteDetails
     {
         get => venteDetails;
         set
         {
-            if (value == null || value.Count == 0)
-                throw new ArgumentNullException(nameof(value), "VenteDetails cannot be null or empty.");
-        
-            foreach (var detail in value)
+            if (venteDetails != null)
             {
-                if (detail == null)
-                    throw new ArgumentException("VenteDetails contains a null element.", nameof(value));
+                foreach (var detail in value)
+                {
+                    if (detail == null)
+                        throw new ArgumentException("VenteDetails contains a null element.", nameof(value));
+                }    
             }
+            
 
             venteDetails = value;
         }
     }
 
+    private String id;
     private DateTime dt;
     private String idMagasin;
+    private String idClient;
     private List<VenteDetails> venteDetails;
     
     public Vente()

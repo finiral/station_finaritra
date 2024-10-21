@@ -1,6 +1,11 @@
 ﻿@{
 ViewData["Title"] = "Ventes";
 Layout = "_Layout";
+
+var products = ViewBag.Products as List<station_boutique.Models.Produit>;
+var clients = ViewBag.Clients as List<station_boutique.Models.Client>;
+var ventes = ViewBag.Ventes as List<station_boutique.Models.Vente>;
+
 }
 
 @model List<station_boutique.Models.Produit>
@@ -16,7 +21,7 @@ Layout = "_Layout";
                         <div class="col-md-4">
                             <label for="produitSelect" class="form-label">Produit</label>
                             <select class="form-select form-select-lg produitSelect" name="produitSelect">
-                                @foreach (var produit in Model)
+                                @foreach (var produit in products)
                                 {
                                     <option value="@produit.Id" data-price="@produit.PuVente">@produit.Val</option>
                                 }
@@ -40,18 +45,50 @@ Layout = "_Layout";
                     <label for="dateInput" class="form-label">Date</label>
                     <input type="date" class="form-control form-control-lg" name="dateInput" />
                 </div>
+                <div class="col-md-3">
+                    <label for="produitSelect" class="form-label">Client</label>
+                    <select class="form-select form-select-lg produitSelect" name="clientSelect">
+                        @foreach (var client in clients)
+                        {
+                        <option value="@client.Id">@client.Nom</option>
+                        }
+                    </select>
+                </div>
                 <div class="row mb-3">
                     <div class="col-md-12">
                         <label class="form-label">Total Prix de Vente: </label>
                         <span id="totalPrice">0</span>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-success btn-lg">Confirmer les ventes</button>
+                <button type="submit" class="btn btn-success btn-lg">Payer</button>
+                <input type="radio" name="isDirect" value="1" checked="checked">Direct</input>
+                <input type="radio" name="isDirect" value="-1">Crédit</input>
             </form>
         </div>
     </div>
 </div>
-
+<h2>Liste des Ventes</h2>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Date</th>
+            <th>Client</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var vente in ventes)
+        {
+        <tr onclick="window.location.href='@Url.Action("Details", "Home", new { id = vente.Id })'">
+            <td>@vente.Id</td>
+            <td>@vente.Dt.ToString("yyyy-MM-dd")</td>
+            <td>@vente.IdClient</td>
+        </tr>
+        }
+        </tbody>
+    </table>
+</div>
 <script>
     function updateUnitPriceAndTotal() {
         let totalPrice = 0;
@@ -74,7 +111,7 @@ Layout = "_Layout";
             <div class="col-md-4">
                 <label for="produitSelect" class="form-label">Produit</label>
                 <select class="form-select form-select-lg produitSelect" name="produitSelect">
-                    @foreach (var produit in Model)
+                    @foreach (var produit in products)
         {
         <option value="@produit.Id" data-price="@produit.PuVente">@produit.Val</option>
         }
