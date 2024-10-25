@@ -90,5 +90,33 @@ public class Lubrifiant {
         }
     }
 
+    public Lubrifiant getById(Connection c,int idLubrifiant) throws Exception {
+        PreparedStatement s = null;
+        ResultSet rs = null;
+        try {
+            s = c.prepareStatement("SELECT * FROM " + this.table_name+" WHERE id_lubrifiant = ?");
+            s.setInt(1, idLubrifiant);
+            rs = s.executeQuery();
+            Lubrifiant p=new Lubrifiant();
+            if (rs.next()) {
+                p.setId(rs.getInt("id_lubrifiant"));
+                p.setIdCentrale(rs.getString("id_centrale"));
+                p.setNom(rs.getString("nom"));
+                p.setPrixAchat(rs.getDouble("prixAchat"));
+                p.setPrixVente(rs.getDouble("prixVente"));
+            }
+            return p;
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (s != null) {
+                s.close();
+            }
+        }
+    }
+
 
 }
