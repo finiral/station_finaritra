@@ -3,7 +3,6 @@ package mg.fini_station.pompes;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import mg.fini_station.stock.Reservoir;
 import mg.fini_station.utils.DbConn;
 
@@ -81,12 +80,12 @@ public class Pompe {
     }
 
     // Retrieve all Pompe records
-    public List<Pompe> getAll() throws Exception {
+    public List<Pompe> findAll() throws Exception {
         Connection c = null;
         try {
             DbConn db = new DbConn();
             c = db.getConnection();
-            return this.getAll(c);
+            return this.findAll(c);
         } catch (Exception e) {
             throw e;
         } finally {
@@ -94,7 +93,7 @@ public class Pompe {
         }
     }
 
-    public List<Pompe> getAll(Connection c) throws Exception {
+    public List<Pompe> findAll(Connection c) throws Exception {
         PreparedStatement s = null;
         ResultSet rs = null;
         try {
@@ -106,7 +105,7 @@ public class Pompe {
                 p.setIdPompe(rs.getInt("id_pompe"));
                 p.setNumeroPompe(rs.getString("numero_pompe"));
                 p.setQteMax(rs.getDouble("qteMax"));
-                p.setReservoir(new Reservoir().getById(rs.getInt("id_reservoir"))); // Assuming Reservoir has a getById method
+                p.setReservoir(new Reservoir().findById(rs.getInt("id_reservoir"))); // Assuming Reservoir has a findById method
                 res.add(p);
             }
             return res;
@@ -119,7 +118,7 @@ public class Pompe {
     }
 
     // Retrieve a Pompe by ID
-    public Pompe getById(int id) throws Exception {
+    public Pompe findById(int id) throws Exception {
         Connection c = null;
         PreparedStatement s = null;
         ResultSet rs = null;
@@ -135,7 +134,7 @@ public class Pompe {
                 p.setIdPompe(rs.getInt("id_pompe"));
                 p.setNumeroPompe(rs.getString("numero_pompe"));
                 p.setQteMax(rs.getDouble("qteMax"));
-                p.setReservoir(new Reservoir().getById(rs.getInt("id_reservoir")));
+                p.setReservoir(new Reservoir().findById(rs.getInt("id_reservoir")));
             }
             return p;
         } catch (Exception e) {

@@ -14,7 +14,7 @@ import mg.fini_station.stock.*;
 @WebServlet("/reservoir")
 public class ReservoirServlet extends HttpServlet {
     protected void prepDispatch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        List<Reservoir> ls_reservoir = new Reservoir().getAll();
+        List<Reservoir> ls_reservoir = new Reservoir().findAll();
         req.setAttribute("ls_reservoir", ls_reservoir);
         req.getRequestDispatcher("pages/reservoirForm.jsp").forward(req, resp);
     }
@@ -35,7 +35,7 @@ public class ReservoirServlet extends HttpServlet {
             int id_reservoir = Integer.parseInt(req.getParameter("id_reservoir"));
             String dt = req.getParameter("dt");
             double qte = Double.parseDouble(req.getParameter("qte"));
-            Reservoir r = new Reservoir().getById(id_reservoir);
+            Reservoir r = new Reservoir().findById(id_reservoir);
             r.acheter(dt, qte);
             req.setAttribute("etat","Achat liquide reservoir reussi");
             prepDispatch(req, resp);

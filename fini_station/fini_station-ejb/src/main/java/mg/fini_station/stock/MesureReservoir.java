@@ -68,7 +68,7 @@ public class MesureReservoir {
     }
 
     // Récupérer toutes les mesures de réservoir
-    public List<MesureReservoir> getAll() throws Exception {
+    public List<MesureReservoir> findAll() throws Exception {
         Connection c = null;
         PreparedStatement s = null;
         ResultSet rs = null;
@@ -96,7 +96,7 @@ public class MesureReservoir {
     }
 
     // Récupérer une mesure de réservoir par ID
-    public MesureReservoir getById(int id) throws Exception {
+    public MesureReservoir findById(int id) throws Exception {
         Connection c = null;
         PreparedStatement s = null;
         ResultSet rs = null;

@@ -5,10 +5,15 @@ C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_sta
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-war\src\main\java\mg\fini_station\ejb\web\PrevisionServlet.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-war\src\main\java\mg\fini_station\ejb\web\ReservoirServlet.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-war\src\main\java\mg\fini_station\ejb\web\rest_api\ClientService.java
+C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-war\src\main\java\mg\fini_station\ejb\web\rest_api\CORSFilter.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-war\src\main\java\mg\fini_station\ejb\web\rest_api\FiniREST.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-war\src\main\java\mg\fini_station\ejb\web\rest_api\ProduitService.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-war\src\main\java\mg\fini_station\ejb\web\rest_api\repos\ProduitRepo.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-war\src\main\java\mg\fini_station\ejb\web\rest_api\repos\StockRepo.java
+C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-war\src\main\java\mg\fini_station\ejb\web\rest_api\services\LubrifiantService.java
+C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-war\src\main\java\mg\fini_station\ejb\web\rest_api\services\PompeService.java
+C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-war\src\main\java\mg\fini_station\ejb\web\rest_api\services\PompisteService.java
+C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-war\src\main\java\mg\fini_station\ejb\web\rest_api\services\PrelevLubService.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-war\src\main\java\mg\fini_station\ejb\web\rest_api\StockService.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-war\src\main\java\mg\fini_station\ejb\web\rest_api\VenteService.java
 C:\Users\USER\College\ANNEE3\S5\ArchiLog\station_finaritra\fini_station\fini_station-war\src\main\java\mg\fini_station\ejb\web\StockServlet.java

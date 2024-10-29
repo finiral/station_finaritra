@@ -18,7 +18,7 @@ import mg.fini_station.utils.DbConn;
 public class PrelevementCuveServlet extends HttpServlet {
     protected void prepDispatch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         Connection c = new DbConn().getConnection();
-        List<Reservoir> ls_reservoir = new Reservoir().getAll(c);
+        List<Reservoir> ls_reservoir = new Reservoir().findAll(c);
         List<PrelevementReservoir> ls_prelevements=new PrelevementReservoir().getAll(c);
         c.close();
         req.setAttribute("ls_reservoir", ls_reservoir);
@@ -42,7 +42,7 @@ public class PrelevementCuveServlet extends HttpServlet {
             int id_reservoir = Integer.parseInt(req.getParameter("id_reservoir"));
             String dt_time = req.getParameter("dt_time");
             String mesure = req.getParameter("mesure");
-            Reservoir r = new Reservoir().getById(id_reservoir);
+            Reservoir r = new Reservoir().findById(id_reservoir);
             PrelevementReservoir pr=new PrelevementReservoir(-87, mesure,dt_time, r);
             pr.prelever();
             req.setAttribute("etat", "Insertion Prelevement reussi ");

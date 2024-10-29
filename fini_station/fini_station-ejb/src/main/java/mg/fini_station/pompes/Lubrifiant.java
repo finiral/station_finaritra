@@ -46,12 +46,12 @@ public class Lubrifiant {
     }
 
 
-    public List<Lubrifiant> getAll() throws Exception {
+    public List<Lubrifiant> findAll() throws Exception {
         Connection c = null;
         try {
             DbConn db = new DbConn();
             c = db.getConnection();
-            return this.getAll(c);
+            return this.findAll(c);
         } catch (Exception e) {
             throw e;
         } finally {
@@ -61,7 +61,7 @@ public class Lubrifiant {
         }
     }
 
-    public List<Lubrifiant> getAll(Connection c) throws Exception {
+    public List<Lubrifiant> findAll(Connection c) throws Exception {
         PreparedStatement s = null;
         ResultSet rs = null;
         try {
@@ -90,7 +90,7 @@ public class Lubrifiant {
         }
     }
 
-    public Lubrifiant getById(Connection c,int idLubrifiant) throws Exception {
+    public Lubrifiant findById(Connection c,int idLubrifiant) throws Exception {
         PreparedStatement s = null;
         ResultSet rs = null;
         try {

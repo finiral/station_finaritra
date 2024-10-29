@@ -10,6 +10,7 @@ import javax.ws.rs.core.MediaType;
 
 import mg.fini_station.pompes.Pompe;
 import mg.fini_station.pompes.Pompiste;
+import mg.fini_station.utils.DbConn;
 import utilitaire.UtilDB;
 
 @Path("pompistes")
@@ -19,9 +20,9 @@ public class PompisteService {
 	public List<Pompiste> getAllPompistes() throws Exception {
 		Connection c= null;
 		try{
-			c=new UtilDB().GetConn();
+			c=new DbConn().getConnection();
 			c.setAutoCommit(false);
-			List<Pompiste> allPompistes = new Pompiste().getAll(c);
+			List<Pompiste> allPompistes = new Pompiste().findAll(c);
 			return allPompistes;
 		} catch (Exception e) {
 			if (c!=null) c.rollback();

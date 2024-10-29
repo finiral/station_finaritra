@@ -58,12 +58,12 @@ public class Pompiste {
     }
 
     // Retrieve all Pompiste records
-    public List<Pompiste> getAll() throws Exception {
+    public List<Pompiste> findAll() throws Exception {
         Connection c = null;
         try {
             DbConn db = new DbConn();
             c = db.getConnection();
-            return this.getAll(c);
+            return this.findAll(c);
         } catch (Exception e) {
             throw e;
         } finally {
@@ -71,7 +71,7 @@ public class Pompiste {
         }
     }
 
-    public List<Pompiste> getAll(Connection c) throws Exception {
+    public List<Pompiste> findAll(Connection c) throws Exception {
         PreparedStatement s = null;
         ResultSet rs = null;
         try {
@@ -94,7 +94,7 @@ public class Pompiste {
     }
 
     // Retrieve a Pompiste by ID
-    public Pompiste getById(int id) throws Exception {
+    public Pompiste findById(int id) throws Exception {
         Connection c = null;
         PreparedStatement s = null;
         ResultSet rs = null;

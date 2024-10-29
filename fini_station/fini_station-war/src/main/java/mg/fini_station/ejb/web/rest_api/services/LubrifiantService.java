@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import mg.fini_station.pompes.Lubrifiant;
+import mg.fini_station.utils.DbConn;
 import utilitaire.UtilDB;
 
 @Path("lubrifiants")
@@ -18,9 +19,9 @@ public class LubrifiantService {
 	public List<Lubrifiant> getAllLubrifiants() throws Exception {
 		Connection c= null;
 		try{
-			c=new UtilDB().GetConn();
+			c=new DbConn().getConnection();
 			c.setAutoCommit(false);
-			List<Lubrifiant> allLubrifiants = new Lubrifiant().getAll(c);
+			List<Lubrifiant> allLubrifiants = new Lubrifiant().findAll(c);
 			return allLubrifiants;
 		} catch (Exception e) {
 			if (c!=null) c.rollback();

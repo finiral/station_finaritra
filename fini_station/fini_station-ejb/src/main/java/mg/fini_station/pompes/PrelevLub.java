@@ -15,9 +15,9 @@ import vente.VenteDetails;
 public class PrelevLub {
     private String table_name = "PrelevLub";
     private int idPrelevement;
-    private Pompiste pompiste;
-    private Pompe pompe;
-    private Lubrifiant lubrifiant;
+    private int pompiste;
+    private int pompe;
+    private int lubrifiant;
     private double qte;
     private double pu;
 
@@ -32,11 +32,11 @@ public class PrelevLub {
     private double TAUX = 1.0;
     private String CLIENTDIVERS = "CLI000054";
 
-    public Lubrifiant getLubrifiant() {
+    public int getLubrifiant() {
         return lubrifiant;
     }
 
-    public void setLubrifiant(Lubrifiant lubrifiant) {
+    public void setLubrifiant(int lubrifiant) {
         this.lubrifiant = lubrifiant;
     }
 
@@ -70,19 +70,19 @@ public class PrelevLub {
         this.idPrelevement = idPrelevement;
     }
 
-    public Pompiste getPompiste() {
+    public int getPompiste() {
         return pompiste;
     }
 
-    public void setPompiste(Pompiste pompiste) {
+    public void setPompiste(int pompiste) {
         this.pompiste = pompiste;
     }
 
-    public Pompe getPompe() {
+    public int getPompe() {
         return pompe;
     }
 
-    public void setPompe(Pompe pompe) {
+    public void setPompe(int pompe) {
         this.pompe = pompe;
     }
 
@@ -94,19 +94,16 @@ public class PrelevLub {
         this.dateTime = dateTime;
     }
 
-    public void setDateTime(String dateTime) {
-        this.setDateTime(Utilitaire.parseToTimestamp(dateTime)); // Assuming Utilitaire handles parsing
-    }
 
     public void insert(Connection c) throws Exception {
         PreparedStatement s = null;
         try {
             s = c.prepareStatement(
                     "INSERT INTO " + this.table_name
-                            + " (id_pompiste, id_pompe,id_lubrifiant,date_prelevlub,qte,pu) VALUES (?,?,?,?)");
-            s.setInt(1, this.getPompiste().getIdPompiste());
-            s.setInt(2, this.getPompe().getIdPompe());
-            s.setInt(3, this.getLubrifiant().getId());
+                            + " (id_pompiste, id_pompe,id_lubrifiant,date_prelevlub,qte,pu) VALUES (?,?,?,?,?,?)");
+            s.setInt(1, this.getPompiste());
+            s.setInt(2, this.getPompe());
+            s.setInt(3, this.getLubrifiant());
             s.setTimestamp(4, this.getDateTime());
             s.setDouble(5, this.getQte());
             s.setDouble(6, this.getPu());
@@ -139,10 +136,10 @@ public class PrelevLub {
                 p.setQte(rs.getDouble("qte"));
                 p.setPu(rs.getDouble("pu"));
                 p.setDateTime(rs.getTimestamp("date_PrelevLub"));
-                p.setLubrifiant(new Lubrifiant().getById(c, rs.getInt("id_lubrifiant")));
+                p.setLubrifiant(rs.getInt("id_lubrifiant"));
                 // Retrieve and set Pompiste and Pompe objects
-                p.setPompiste(new Pompiste().getById(rs.getInt("id_pompiste")));
-                p.setPompe(new Pompe().getById(rs.getInt("id_pompe")));
+                p.setPompiste(rs.getInt("id_pompiste"));
+                p.setPompe(rs.getInt("id_pompe"));
                 res.add(p);
             }
         } catch (Exception e) {
@@ -157,15 +154,15 @@ public class PrelevLub {
     }
 
     public boolean isStatePair(Connection c) throws Exception {
-        List<PrelevLub> ls = this.getByIdPompeAndTypeDtDesc(c, this.getPompe().getIdPompe(),
-                this.getLubrifiant().getId());
+        List<PrelevLub> ls = this.getByIdPompeAndTypeDtDesc(c, this.getPompe(),
+                this.getLubrifiant());
         return ls.size() % 2 != 0;
     }
 
     public double getDifferenceQte(Connection c) throws Exception {
-        List<PrelevLub> ls = this.getByIdPompeAndTypeDtDesc(c, this.getPompe().getIdPompe(),
-                this.getLubrifiant().getId());
-        return this.getQte() - ls.get(0).getQte();
+        List<PrelevLub> ls = this.getByIdPompeAndTypeDtDesc(c, this.getPompe(),
+                this.getLubrifiant());
+        return ls.get(0).getQte()-this.getQte();
     }
 
     public double getDifferenceQteVola(Connection c) throws Exception {
@@ -173,9 +170,7 @@ public class PrelevLub {
         return res;
     }
 
-    public void prelever() throws Exception {
-        Connection c = null;
-        Connection c_mr = null;
+    public void prelever(Connection c,Connection c_mr) throws Exception {
         try {
             DbConn db = new DbConn();
             c = db.getConnection();
@@ -186,7 +181,7 @@ public class PrelevLub {
             } else {
                 // c'est une sortie
                 /// VERIFICATION
-                if (this.getDifferenceQte(c_mr) < 0) {
+                if (this.getDifferenceQte(c) <= 0) {
                     throw new Exception("Qte prelever (" + this.getQte() + ") trop haut");
                 }
                 c_mr = new UtilDB().GetConn();
@@ -199,7 +194,7 @@ public class PrelevLub {
                 v.setEstPrevu(1);
                 v.createObject(USER, c_mr);
                 VenteDetails vd = new VenteDetails();
-                vd.setIdProduit(this.getLubrifiant().getIdCentrale());
+                vd.setIdProduit(new Lubrifiant().findById(c,this.getLubrifiant() ).getIdCentrale());
                 vd.setPuVente(this.getPu());
                 vd.setQte(this.getDifferenceQte(c));
                 vd.setPu(vd.getPuVente());
@@ -207,22 +202,18 @@ public class PrelevLub {
                 vd.setTauxDeChange(TAUX);
                 vd.setIdDevise(DEVISE);
                 vd.setCompte(COMPTE);
-                vd.insertToTable(c);
-                v.validerObject(USER, c);
-                v.payer(USER, c);
+                vd.insertToTable(c_mr);
+                v.validerObject(USER, c_mr);
+                v.payer(USER, c_mr);
 
             }
             c.commit();
+            c_mr.commit();
 
         } catch (Exception e) {
             c.rollback();
             c_mr.rollback();
             throw e;
-        } finally {
-            if (c != null)
-                c.close();
-            if (c_mr != null)
-                c_mr.close();
         }
     }
 

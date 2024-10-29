@@ -197,7 +197,7 @@ public class PrelevementReservoir {
                 pr.setIdPrelevementReservoir(rs.getInt("id_prelevementreservoir"));
                 pr.setLongueur(rs.getDouble("longueur"));
                 pr.setdtPrelevement(rs.getDate("date_prelevement"));
-                pr.setR(new Reservoir().getById(rs.getInt("id_reservoir"))); // Récupère le réservoir associé
+                pr.setR(new Reservoir().findById(rs.getInt("id_reservoir"))); // Récupère le réservoir associé
                 pr.setVolume(rs.getDouble("volume_prelevement"));
             }
 
@@ -229,7 +229,7 @@ public class PrelevementReservoir {
                 pr.setIdPrelevementReservoir(rs.getInt("id_prelevementreservoir"));
                 pr.setLongueur(rs.getDouble("longueur"));
                 pr.setdtPrelevement(rs.getDate("date_prelevement"));
-                pr.setR(new Reservoir().getById(rs.getInt("id_reservoir"))); // Récupère le réservoir associé
+                pr.setR(new Reservoir().findById(rs.getInt("id_reservoir"))); // Récupère le réservoir associé
                 pr.setVolume(rs.getDouble("volume_prelevement"));
                 prelevements.add(pr);
             }
