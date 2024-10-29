@@ -140,8 +140,8 @@ public class Prelevement {
                 p.setDateTime(rs.getTimestamp("dateheure_prelevement"));
                 // Retrieve and set Pompiste and Pompe objects (assuming you have appropriate
                 // DAO methods for them)
-                p.setPompiste(new Pompiste().getById(rs.getInt("id_pompiste")));
-                p.setPompe(new Pompe().getById(rs.getInt("id_pompe")));
+                p.setPompiste(new Pompiste().findById(rs.getInt("id_pompiste")));
+                p.setPompe(new Pompe().findById(rs.getInt("id_pompe")));
                 res.add(p);
             }
             return res;
@@ -174,8 +174,8 @@ public class Prelevement {
                 p.setIdPrelevement(rs.getInt("id_prelevement"));
                 p.setCompteur(rs.getDouble("compteur_prelevement"));
                 p.setDateTime(rs.getTimestamp("dateheure_prelevement"));
-                p.setPompiste(new Pompiste().getById(rs.getInt("id_pompiste")));
-                p.setPompe(new Pompe().getById(rs.getInt("id_pompe")));
+                p.setPompiste(new Pompiste().findById(rs.getInt("id_pompiste")));
+                p.setPompe(new Pompe().findById(rs.getInt("id_pompe")));
             }
             return p;
         } catch (Exception e) {
@@ -273,8 +273,8 @@ public class Prelevement {
                 p.setCompteur(rs.getDouble("compteur_prelevement"));
                 p.setDateTime(rs.getTimestamp("dateheure_prelevement"));
                 // Retrieve and set Pompiste and Pompe objects
-                p.setPompiste(new Pompiste().getById(rs.getInt("id_pompiste")));
-                p.setPompe(new Pompe().getById(rs.getInt("id_pompe")));
+                p.setPompiste(new Pompiste().findById(rs.getInt("id_pompiste")));
+                p.setPompe(new Pompe().findById(rs.getInt("id_pompe")));
                 res.add(p);
             }
         } catch (Exception e) {
@@ -322,8 +322,8 @@ public class Prelevement {
                 p.setCompteur(rs.getDouble("compteur_prelevement"));
                 p.setDateTime(rs.getTimestamp("dateheure_prelevement"));
                 // Retrieve and set Pompiste and Pompe objects
-                p.setPompiste(new Pompiste().getById(rs.getInt("id_pompiste")));
-                p.setPompe(new Pompe().getById(rs.getInt("id_pompe")));
+                p.setPompiste(new Pompiste().findById(rs.getInt("id_pompiste")));
+                p.setPompe(new Pompe().findById(rs.getInt("id_pompe")));
                 res.add(p);
             }
         } catch (Exception e) {

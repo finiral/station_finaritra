@@ -22,8 +22,8 @@ public class FormPrelevementServlet extends HttpServlet {
     protected void prepDispatch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         Connection c=new DbConn().getConnection();
         List<Prelevement> ls_prelevement=new Prelevement().getAll(c);
-        List<Pompiste> ls_pompiste = new Pompiste().getAll(c);
-        List<Pompe> ls_pompe = new Pompe().getAll(c);
+        List<Pompiste> ls_pompiste = new Pompiste().findAll(c);
+        List<Pompe> ls_pompe = new Pompe().findAll(c);
         c.close();
         req.setAttribute("prelevements", ls_prelevement);
         req.setAttribute("pompistes", ls_pompiste);
@@ -46,9 +46,9 @@ public class FormPrelevementServlet extends HttpServlet {
 
         try {
             int id_pompiste = Integer.parseInt(req.getParameter("id_pompiste"));
-            Pompiste pompiste = new Pompiste().getById(id_pompiste);
+            Pompiste pompiste = new Pompiste().findById(id_pompiste);
             int id_pompe = Integer.parseInt(req.getParameter("id_pompe"));
-            mg.fini_station.pompes.Pompe pompe = new Pompe().getById(id_pompe);
+            mg.fini_station.pompes.Pompe pompe = new Pompe().findById(id_pompe);
             String dt_time = req.getParameter("dt_time");
             double montant = Double.parseDouble(req.getParameter("montant"));
             Prelevement p = new Prelevement(-98, pompiste, pompe, montant, dt_time);

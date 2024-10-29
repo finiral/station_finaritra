@@ -9,18 +9,20 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import mg.fini_station.pompes.Pompe;
-import utilitaire.UtilDB;
+import mg.fini_station.utils.DbConn;
 
 @Path("pompes")
 public class PompeService {
+	Pompe p=new Pompe();
     @GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	public List<Pompe> getAllPompes() throws Exception {
 		Connection c= null;
 		try{
-			c=new UtilDB().GetConn();
+			c=new DbConn().getConnection();
 			c.setAutoCommit(false);
-			List<Pompe> allPompes = new Pompe().getAll(c);
+			List<Pompe> allPompes = p.findAll(c);
+			c.commit();
 			return allPompes;
 		} catch (Exception e) {
 			if (c!=null) c.rollback();

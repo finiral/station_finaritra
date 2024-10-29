@@ -91,7 +91,7 @@ public class Liquide {
     }
 
     // Retrieve all Liquide records
-    public List<Liquide> getAll() throws Exception {
+    public List<Liquide> findAll() throws Exception {
         Connection c = null;
         PreparedStatement s = null;
         ResultSet rs = null;
@@ -121,7 +121,7 @@ public class Liquide {
     }
 
     // Retrieve a Liquide by ID
-    public Liquide getById(int id) throws Exception {
+    public Liquide findById(int id) throws Exception {
         Connection c = null;
         PreparedStatement s = null;
         ResultSet rs = null;

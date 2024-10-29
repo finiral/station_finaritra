@@ -17,7 +17,7 @@ import mg.fini_station.stock.Reservoir;
 public class StockServlet extends HttpServlet {
 
     protected void prepDispatch(HttpServletRequest req, HttpServletResponse resp) throws Exception{
-        List<Reservoir> reservoirs=new Reservoir().getAll();
+        List<Reservoir> reservoirs=new Reservoir().findAll();
         req.setAttribute("reservoirs", reservoirs);
         req.getRequestDispatcher("pages/stocks.jsp").forward(req, resp);
     }
@@ -36,7 +36,7 @@ public class StockServlet extends HttpServlet {
         
         List<Anomalie> anomalies;
         try {
-            anomalies = new Anomalie().getAllAnomalie(new Reservoir().getAll(),Date.valueOf(req.getParameter("dt")));
+            anomalies = new Anomalie().getAllAnomalie(new Reservoir().findAll(),Date.valueOf(req.getParameter("dt")));
             req.setAttribute("anomalies", anomalies);
             prepDispatch(req, resp);
         } catch (Exception e) {

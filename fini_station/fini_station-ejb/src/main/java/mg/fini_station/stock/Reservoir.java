@@ -174,7 +174,7 @@ public class Reservoir {
     }
 
     // Retrieve all Reservoir records
-    public List<Reservoir> getAll(Connection c) throws Exception {
+    public List<Reservoir> findAll(Connection c) throws Exception {
         PreparedStatement s = null;
         ResultSet rs = null;
         try {
@@ -185,7 +185,7 @@ public class Reservoir {
                 Reservoir r = new Reservoir();
                 r.setIdReservoir(rs.getInt("id_reservoir"));
                 r.setQteMax(rs.getDouble("qte_max"));
-                r.setTypeLiquide(new Liquide().getById(rs.getInt("id_liquide"))); // Assuming Liquide has a getById
+                r.setTypeLiquide(new Liquide().findById(rs.getInt("id_liquide"))); // Assuming Liquide has a findById
                                                                                   // method
                 res.add(r);
             }
@@ -199,12 +199,12 @@ public class Reservoir {
                 s.close();
         }
     }
-    public List<Reservoir> getAll() throws Exception {
+    public List<Reservoir> findAll() throws Exception {
         Connection c = null;
         try {
             DbConn db = new DbConn();
             c = db.getConnection();
-            return this.getAll(c);
+            return this.findAll(c);
         } catch (Exception e) {
             throw e;
         } finally {
@@ -213,7 +213,7 @@ public class Reservoir {
         }
     }
     // Retrieve a Reservoir by ID
-    public Reservoir getById(int id) throws Exception {
+    public Reservoir findById(int id) throws Exception {
         Connection c = null;
         PreparedStatement s = null;
         ResultSet rs = null;
@@ -228,7 +228,7 @@ public class Reservoir {
                 r = new Reservoir();
                 r.setIdReservoir(rs.getInt("id_reservoir"));
                 r.setQteMax(rs.getDouble("qte_max"));
-                r.setTypeLiquide(new Liquide().getById(rs.getInt("id_liquide")));
+                r.setTypeLiquide(new Liquide().findById(rs.getInt("id_liquide")));
             }
             return r;
         } catch (Exception e) {
