@@ -31,6 +31,22 @@ public class StockRepo {
         }
     }
 
+    public List<EtatStock> getAllEtatStocksLubrifiants(Connection c) throws Exception{
+        try {
+            c = new UtilDB().GetConn();
+            c.setAutoCommit(false);
+            Object[] ls = CGenUtil.rechercher(new EtatStock(), null, null, c, "and IDTYPEPRODUIT = 'TP00005'");
+            List<EtatStock> res = new ArrayList<EtatStock>();
+            for (Object o : ls) {
+                if (o instanceof EtatStock) {
+                    res.add((EtatStock) o);
+                }
+            }
+            return res;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
     public List<Vente> getAllVentes(Connection c) throws Exception{
         try {
             c = new UtilDB().GetConn();

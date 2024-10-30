@@ -91,4 +91,23 @@ public class StockService {
 		}
     }
 
+	@Path("lubrifiants")
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON })
+	public List<EtatStock> getAllEtatStocksLubr() throws Exception {
+		Connection c= null;
+		try{
+			c=new UtilDB().GetConn();
+			c.setAutoCommit(false);
+			List<EtatStock> allEtatStocks = new StockRepo().getAllEtatStocksLubrifiants(c);
+			return allEtatStocks;
+		} catch (Exception e) {
+			if (c!=null) c.rollback();
+			throw e;
+		}
+		finally {
+            if (c!=null) c.close();
+		}
+    }
+
 }

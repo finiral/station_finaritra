@@ -7,6 +7,7 @@ import java.util.List;
 import mg.fini_station.mvt.StockReservoir;
 import mg.fini_station.utils.DbConn;
 import mg.fini_station.utils.Utilitaire;
+import stock.MvtStock;
 import stock.MvtStockFille;
 import utilitaire.UtilDB;
 import vente.Vente;
@@ -94,7 +95,6 @@ public class PrelevLub {
         this.dateTime = dateTime;
     }
 
-
     public void insert(Connection c) throws Exception {
         PreparedStatement s = null;
         try {
@@ -162,7 +162,7 @@ public class PrelevLub {
     public double getDifferenceQte(Connection c) throws Exception {
         List<PrelevLub> ls = this.getByIdPompeAndTypeDtDesc(c, this.getPompe(),
                 this.getLubrifiant());
-        return ls.get(0).getQte()-this.getQte();
+        return ls.get(0).getQte() - this.getQte();
     }
 
     public double getDifferenceQteVola(Connection c) throws Exception {
@@ -170,7 +170,7 @@ public class PrelevLub {
         return res;
     }
 
-    public void prelever(Connection c,Connection c_mr) throws Exception {
+    public void prelever(Connection c, Connection c_mr) throws Exception {
         try {
             DbConn db = new DbConn();
             c = db.getConnection();
@@ -186,6 +186,7 @@ public class PrelevLub {
                 }
                 c_mr = new UtilDB().GetConn();
                 c_mr.setAutoCommit(false);
+            ///VENTE
                 Vente v = new Vente();
                 v.setDesignation("LUBRIFIANT SELLING ");
                 v.setDaty(Utilitaire.convertTimestampToDate(this.getDateTime()));
@@ -193,8 +194,17 @@ public class PrelevLub {
                 v.setIdMagasin(MAGASIN);
                 v.setEstPrevu(1);
                 v.createObject(USER, c_mr);
+            /// MOUVEMENT STOCK
+                MvtStock mvtStock = new MvtStock();
+                mvtStock.setIdMagasin(v.getIdMagasin());
+                mvtStock.setDaty(v.getDaty());
+                mvtStock.setDesignation("STOCK SORTIE LUBRIFIANT");
+                mvtStock.setIdTypeMvStock(TYPEMVTSTOCK);
+                mvtStock.setIdVente(v.getId());
+                mvtStock.createObject(USER, c_mr);
+            ///VENTE DETAIL
                 VenteDetails vd = new VenteDetails();
-                vd.setIdProduit(new Lubrifiant().findById(c,this.getLubrifiant() ).getIdCentrale());
+                vd.setIdProduit(new Lubrifiant().findById(c, this.getLubrifiant()).getIdCentrale());
                 vd.setPuVente(this.getPu());
                 vd.setQte(this.getDifferenceQte(c));
                 vd.setPu(vd.getPuVente());
@@ -202,7 +212,18 @@ public class PrelevLub {
                 vd.setTauxDeChange(TAUX);
                 vd.setIdDevise(DEVISE);
                 vd.setCompte(COMPTE);
+                //// CHECK ETAT STOCK
+                vd.CheckEtatStock(c_mr);
                 vd.insertToTable(c_mr);
+            ///STOCK FILLE
+				MvtStockFille stock = new MvtStockFille();
+				stock.setSortie(vd.getQte());
+				stock.setIdProduit(vd.getIdProduit());
+				stock.setEntree(0);
+				stock.setIdVenteDetail(vd.getId());
+				stock.setIdMvtStock(mvtStock.getId());
+				stock.insertToTable(c_mr);
+                /// VALIDATIONS
                 v.validerObject(USER, c_mr);
                 v.payer(USER, c_mr);
 

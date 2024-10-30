@@ -18,6 +18,7 @@ public class PrelevLubService {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON })
     public Response validerPrelevement(PrelevLub p) throws Exception{
+        System.out.println(p.getDateTime());
         Connection c_perso=null;
         Connection c_mr=null;
         try {
