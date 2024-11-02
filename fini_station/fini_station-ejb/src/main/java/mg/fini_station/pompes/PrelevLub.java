@@ -225,6 +225,7 @@ public class PrelevLub {
 				stock.insertToTable(c_mr);
                 /// VALIDATIONS
                 v.validerObject(USER, c_mr);
+                mvtStock.validerObject(USER, c_mr);
                 v.payer(USER, c_mr);
 
             }

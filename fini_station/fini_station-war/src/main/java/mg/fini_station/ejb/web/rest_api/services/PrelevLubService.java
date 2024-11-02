@@ -9,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import mg.fini_station.pompes.Lubrifiant;
 import mg.fini_station.pompes.PrelevLub;
 import mg.fini_station.utils.DbConn;
 import utilitaire.UtilDB;
@@ -24,6 +25,7 @@ public class PrelevLubService {
         try {
             c_perso=new DbConn().getConnection();
             c_mr=new UtilDB().GetConn();
+            p.setPu(new Lubrifiant().findById(c_perso,p.getLubrifiant()).getPrixVente());
             p.prelever(c_perso,c_mr);
             ///sortie
             if(p.isStatePair(c_perso)){

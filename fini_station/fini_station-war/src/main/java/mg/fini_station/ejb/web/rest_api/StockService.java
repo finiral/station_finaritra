@@ -45,6 +45,7 @@ public class StockService {
 	@QueryParam("idMagasin") String idMagasin, @QueryParam("timestamp") long timestamp) throws Exception {
 		Connection c = null;
         Date date = new Date(timestamp);
+		System.out.println("date: " + date);
 		try {
 			c = new UtilDB().GetConn();
 			c.setAutoCommit(false);
@@ -61,7 +62,7 @@ public class StockService {
 			}
 			mvtStock.validerObject(USER, c);
 			c.commit();
-			return Response.ok().build();
+			return Response.ok().entity("Ajout stock succes").build();
 
 		} catch (Exception e) {
 			if (c != null)
